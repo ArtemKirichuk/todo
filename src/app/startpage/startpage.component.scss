@@ -1,0 +1,15 @@
+.example-form-field {
+  width: 100%;
+}
+
+.form {
+  width: 500px;
+  margin: 0 auto;
+}
+
+:host{
+  display: flex;
+    justify-content: center; 
+    align-items: center;     
+    height: 100%;
+}
