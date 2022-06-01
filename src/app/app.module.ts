@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { StartpageComponent } from './startpage/startpage.component';
 import { TasksComponent } from './tasks/tasks.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { TasksComponent } from './tasks/tasks.component';
     RouterModule.forRoot([
       { path: '', component: StartpageComponent },
       { path: 'task', component: TasksComponent },
-    ])
+    ]),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
