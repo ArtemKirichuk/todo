@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ifTask } from 'interfaces';
+import { TaskService } from 'src/app/task.service';
 
 @Component({
   selector: 'app-dialog-task',
@@ -15,11 +18,16 @@ export class DialogTaskComponent implements OnInit {
     category: new FormControl('')
   })
 
-  constructor() { }
+  constructor(public taskService:TaskService,private dialogTask:MatDialogRef<DialogTaskComponent>) { 
+    
+  }
 
   ngOnInit(): void {
   }
   fnCreteTask(){
-
+    // oFormTask.
+    let oTask:ifTask = this.oFormTask.value;
+    this.taskService.fnCreateTask(oTask);
+    const dialogRef = this.dialogTask.close();
   }
 }

@@ -1,13 +1,14 @@
-<h2 mat-dialog-title>Создание задачи</h2>
-<mat-dialog-content class="mat-typography">
-    <!-- <h3>Develop across all platforms</h3> -->
-    <form [formGroup]="oFormTask" class="form" (submit)="fnCreteTask()">
+<form [formGroup]="oFormTask" class="form" (submit)="fnCreteTask()">
+    <h2 mat-dialog-title>Создание задачи</h2>
+    <mat-dialog-content class="mat-typography">
+        <!-- <h3>Develop across all platforms</h3> -->
+
 
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="name">Название задачи</mat-label>
             <input id="name" required formControlName="name" type="text" matInput />
         </mat-form-field>
-        
+
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Дата начала</mat-label>
             <input matInput [matDatepicker]="dateStart" formControlName="dateStart" required>
@@ -32,9 +33,10 @@
         </mat-form-field>
 
 
-    </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Отмена</button>
-    <button mat-button [disabled]="!oFormTask.valid" cdkFocusInitial type="sunmit">Создать</button>
-</mat-dialog-actions>
+
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Отмена</button>
+        <button mat-button [disabled]="!oFormTask.valid" cdkFocusInitial type="sunmit">Создать</button>
+    </mat-dialog-actions>
+</form>
