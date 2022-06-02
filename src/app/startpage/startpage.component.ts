@@ -29,6 +29,8 @@ export class StartpageComponent implements OnInit {
   ngOnInit(): void {
   }
   fnSignIn() {
+    // localStorage.clear()
+    // localStorage.removeItem("Ключ")
     let sUsrs = <string>localStorage.getItem('users');
     let aUser: ifUser[] = [];
     let oUser = this.oFormSignIn.value;

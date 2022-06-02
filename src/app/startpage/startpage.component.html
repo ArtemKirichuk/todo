@@ -1,5 +1,5 @@
-<form [formGroup]="oFormAddUsr" class="form" (submit)="fnAddUsr()">
-  <div *ngIf="bRegistration; else  Authorization">
+<div *ngIf="bRegistration; else  Authorization">
+  <form [formGroup]="oFormAddUsr" class="form" (submit)="fnAddUsr()">
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="login">Логин</mat-label>
       <input id="login" required formControlName="login" type="text" matInput />
@@ -12,35 +12,33 @@
       <mat-label for="password">Введите пароль повторно</mat-label>
       <input id="password" required formControlName="passwordRepeat" type="password" matInput />
     </mat-form-field>
-    <button mat-button type="submit" [disabled]="!oFormAddUsr.valid" >
+
+    <button mat-button type="submit" [disabled]="!oFormAddUsr.valid">
       Зарегистрироваться
     </button>
     <button mat-button type="button" (click)="bRegistration = !bRegistration">
       отмена
     </button>
-  </div>
-
-
-
-
+  </form>
+</div>
 
 <ng-template #Authorization>
 
   <form [formGroup]="oFormSignIn" class="form" (submit)=" fnSignIn()">
-  <mat-form-field class="example-form-field" appearance="fill">
-    <mat-label for="login">Логин</mat-label>
-    <input id="login" required formControlName="login" type="text" matInput />
-  </mat-form-field>
-  <mat-form-field class="example-form-field" appearance="fill">
-    <mat-label for="password">Пароль</mat-label>
-    <input id="password" required formControlName="password" type="password" matInput />
-  </mat-form-field>
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label for="login">Логин</mat-label>
+      <input id="login" required formControlName="login" type="text" matInput />
+    </mat-form-field>
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label for="password">Пароль</mat-label>
+      <input id="password" required formControlName="password" type="password" matInput />
+    </mat-form-field>
 
-  <button mat-button [disabled]="!oFormSignIn.valid" type="submit">
-    Войти
-  </button>
-  <button mat-button type="button" (click)="bRegistration = !bRegistration">
-    Регистрация
-  </button>
-</form>
+    <button mat-button [disabled]="!oFormSignIn.valid" type="submit">
+      Войти
+    </button>
+    <button mat-button type="button" (click)="bRegistration = !bRegistration">
+      Регистрация
+    </button>
+  </form>
 </ng-template>
