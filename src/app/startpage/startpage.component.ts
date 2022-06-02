@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ifUser } from 'interfaces';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 @Component({
   selector: 'app-startpage',
   templateUrl: './startpage.component.html',
@@ -20,33 +21,53 @@ export class StartpageComponent implements OnInit {
 
 
   bRegistration: boolean = false;
-  constructor() { }
+  constructor(
+    
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
   fnSignIn() {
+    let sUsrs = <string>localStorage.getItem('users');
+    let aUser: ifUser[] = [];
+    let oUser = this.oFormSignIn.value;
+    //проверяем существование localstore пользователей
+    if (sUsrs) {
+      aUser = JSON.parse(sUsrs);
+      let bExistUser = aUser.some(e => e.login == oUser.login && e.password == oUser.password);
+      if (bExistUser) {
+        this.router.navigateByUrl('task');
+      } else window.alert('Неверный логин или пароль!');
+    }
 
   }
   fnAddUsr() {
-
     let sUsrs = <string>localStorage.getItem('users');
     let aUser: ifUser[] = [];
     let oNewUser = this.oFormAddUsr.value;
-    //Если стор уже создан
+    //Проверка пароль и повторный пароль
+    if (oNewUser.password !== oNewUser.passwordRepeat) {
+      window.alert('Пароль отличается');
+      return
+    }
+    //Если localstore пользователей уже существует
     if (sUsrs) {
       aUser = JSON.parse(sUsrs);
-      let bExistUsr = aUser.some(e => e.login == oNewUser.login);
-      if (bExistUsr) {
-        console.log('Данный пользователь уже существует.')
-        return
+      let bExistUser = aUser.some(e => e.login == oNewUser.login);
+      if (bExistUser) {
+        console.log('Данный пользователь уже существует. Пароль обнавлён');
       }
     }
+
     //добавляем пользователя
     aUser.push({ login: oNewUser.login, password: oNewUser.password })
-    localStorage.setItem('users', JSON.stringify(aUser)); 
+    localStorage.setItem('users', JSON.stringify(aUser));
     //выходим с регистрации
     this.bRegistration = !this.bRegistration;
     this.oFormAddUsr.reset()
+    //Успешная регистрация
+    window.alert(`Пользователь ${oNewUser.login} зарегистрирован.`);
   }
 
 }
