@@ -8,6 +8,8 @@ import {MatTableModule} from '@angular/material/table';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatRadioModule} from '@angular/material/radio';
 // MatMomentDateModule
 @NgModule({
   exports: [
@@ -17,7 +19,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatTableModule,
     MatDialogModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatCheckboxModule,
+    MatRadioModule
   ],
   imports: [
     MatFormFieldModule,
@@ -26,7 +30,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatTableModule,
     MatDialogModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatCheckboxModule,
+    MatRadioModule
   ]
 })
 export class MaterialModule { }
