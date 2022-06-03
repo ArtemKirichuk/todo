@@ -1,6 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
 import { ifTask } from 'interfaces'; 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +25,13 @@ export class TaskService implements OnInit{
 
     this.aTasks.splice(this.aTasks.indexOf(oTask),1);
     this.aTasks = this.aTasks.slice();
+    this.obTask.next(this.aTasks);
+    localStorage.setItem(this.sTaskKey, JSON.stringify(this.aTasks));
+  }
+  fnEditTask(oNewTask:ifTask,oOldTask:ifTask){
+    
+    let nIndex = this.aTasks.indexOf(oOldTask)
+    this.aTasks.splice(nIndex,1,oNewTask);
     this.obTask.next(this.aTasks);
     localStorage.setItem(this.sTaskKey, JSON.stringify(this.aTasks));
   }
