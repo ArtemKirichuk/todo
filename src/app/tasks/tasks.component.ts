@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ifTask } from 'interfaces';
 import { TaskService } from '../task.service';
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogTaskComponent } from './dialog-task/dialog-task.component';
-import {SelectionModel} from '@angular/cdk/collections';
+import { SelectionModel } from '@angular/cdk/collections';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -11,23 +11,22 @@ import {SelectionModel} from '@angular/cdk/collections';
 })
 export class TasksComponent implements OnInit {
   bLoad = true
-  aTask:ifTask[] =[]
-  aDisplayedColumns:string[] = []
+  aTask: ifTask[] = []
+  aDisplayedColumns: string[] = []
   selection = new SelectionModel<ifTask>(false, []);
-  constructor(public taskService:TaskService,public dialogTask:MatDialog) { }
-  
+  constructor(public taskService: TaskService, public dialogTask: MatDialog) { }
+
   ngOnInit(): void {
-    
-    this.taskService.obTask.subscribe((aTasks)=>{
-      
+
+    this.taskService.obTask.subscribe((aTasks) => {
       this.aTask = aTasks.slice();
       //будет ли это работать при нормальном запросе?
-      this.aDisplayedColumns = Object.keys(this.aTask[0]).map((i)=>{ return i}).concat(['select']);
+      this.aDisplayedColumns = Object.keys(this.aTask[0]).map((i) => { return i }).concat(['select']);
     })
-    
+
   }
   //Добавление задачи
-  fnopenDialog(){
+  fnopenDialog() {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
 
     dialogRef.afterClosed().subscribe(result => {
@@ -35,13 +34,8 @@ export class TasksComponent implements OnInit {
     });
   }
   //Удаление задачи ,row: ifTask
-  fnDeleteRow(event:MouseEvent){
-    var a = this.selection.selected;
-    debugger
-  }
-  updateBtn( row: ifTask): string {
-    
-    console.log(row);
-    return this.selection.isSelected(row) ? 'deselect' : 'select';
+  fnDeleteRow(event: MouseEvent) {
+    let oTask = this.selection.selected[0];
+    this.taskService.fnDeleteTask(oTask);    
   }
 }

@@ -16,10 +16,16 @@ export class TaskService implements OnInit{
   }
   ngOnInit(): void {}
   fnCreateTask(oTask:ifTask){
-    debugger
     this.aTasks.push(oTask);
     localStorage.setItem(this.sTaskKey, JSON.stringify(this.aTasks));
     this.obTask.next(this.aTasks);
+  }
+  fnDeleteTask(oTask:ifTask){
+
+    this.aTasks.splice(this.aTasks.indexOf(oTask),1);
+    this.aTasks = this.aTasks.slice();
+    this.obTask.next(this.aTasks);
+    localStorage.setItem(this.sTaskKey, JSON.stringify(this.aTasks));
   }
   fnGetTasks(){
     return this.aTasks;
