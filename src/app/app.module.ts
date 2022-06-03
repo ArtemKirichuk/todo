@@ -9,8 +9,7 @@ import { TasksComponent } from './tasks/tasks.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { DialogTaskComponent } from './tasks/dialog-task/dialog-task.component';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-
+import {  MAT_DATE_LOCALE } from '@angular/material/core';
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,6 +20,7 @@ import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
   imports: [
     BrowserModule,
     ReactiveFormsModule,
+    
     RouterModule.forRoot([
       { path: '', component: StartpageComponent },
       { path: 'task', component: TasksComponent },

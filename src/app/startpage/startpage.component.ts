@@ -61,7 +61,6 @@ export class StartpageComponent implements OnInit {
         console.log('Данный пользователь уже существует. Пароль обнавлён');
       }
     }
-
     //добавляем пользователя
     aUser.push({ login: oNewUser.login, password: oNewUser.password })
     localStorage.setItem('users', JSON.stringify(aUser));
