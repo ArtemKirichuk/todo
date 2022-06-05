@@ -54,7 +54,6 @@ export class TasksComponent implements OnInit, AfterViewInit {
   fnDeleteRow(event: MouseEvent) {
     if (!this.isSelect()) return
     let oTask = this.selection.selected[0];
-
     this.selection.clear();
     this.taskService.fnDeleteTask(oTask);
   }
