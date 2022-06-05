@@ -9,8 +9,8 @@
       <input id="password" required formControlName="password" type="password" matInput />
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label for="password">Введите пароль повторно</mat-label>
-      <input id="password" required formControlName="passwordRepeat" type="password" matInput />
+      <mat-label for="passwordRepeat">Введите пароль повторно</mat-label>
+      <input id="passwordRepeat" required formControlName="passwordRepeat" type="password" matInput />
     </mat-form-field>
 
     <button mat-button type="submit" [disabled]="!oFormAddUsr.valid">
@@ -30,8 +30,8 @@
       <input id="login" required formControlName="login" type="text" matInput />
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label for="password">Пароль</mat-label>
-      <input id="password" required formControlName="password" type="password" matInput />
+      <mat-label for="passwordReg">Пароль</mat-label>
+      <input id="passwordReg" required formControlName="password" type="password" matInput />
     </mat-form-field>
 
     <button mat-button [disabled]="!oFormSignIn.valid" type="submit">

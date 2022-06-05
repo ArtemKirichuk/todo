@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { DialogTaskComponent } from './tasks/dialog-task/dialog-task.component';
 import {  MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,9 +30,8 @@ import {  MAT_DATE_LOCALE } from '@angular/material/core';
     MaterialModule
   ],
   providers: [
-    {
-      provide: MAT_DATE_LOCALE, useValue: 'ru'
-    }
+    {provide: MAT_DATE_LOCALE, useValue: 'ru'},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
   ],
   bootstrap: [AppComponent]
 })

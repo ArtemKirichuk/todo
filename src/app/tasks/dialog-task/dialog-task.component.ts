@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ifTask } from 'interfaces';
+import { ifTask } from 'src/interfaces';
 import { TaskService } from 'src/app/task.service';
 
 @Component({

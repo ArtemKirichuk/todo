@@ -11,35 +11,35 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatRadioModule} from '@angular/material/radio';
 import { MatSortModule } from '@angular/material/sort';
-
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 // MatMomentDateModule
 @NgModule({
   exports: [
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    // MatTableDataSource,
     MatTableModule,
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatSortModule
+    MatSortModule,
+    MatSnackBarModule
   ],
   imports: [
     
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    // MatTableDataSource,
     MatTableModule,
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
     MatRadioModule,
-    MatSortModule
+    MatSortModule,
+    MatSnackBarModule
     
   ]
 })

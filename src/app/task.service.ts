@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
-import { ifTask } from 'interfaces'; 
+import { ifTask } from 'src/interfaces'; 
 
 @Injectable({
   providedIn: 'root'

@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ifUser } from 'interfaces';
+import { ifUser } from 'src/interfaces';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { i18n } from 'src/i18n'; 
+
 @Component({
   selector: 'app-startpage',
   templateUrl: './startpage.component.html',
@@ -18,20 +21,19 @@ export class StartpageComponent implements OnInit {
     password: new FormControl('')
   })
   aUser: ifUser[] = [];
-
+  usersKey = 'users';
 
   bRegistration: boolean = false;
   constructor(
-    
+    private _snackBar: MatSnackBar,
     private router: Router
   ) { }
 
   ngOnInit(): void {
   }
   fnSignIn() {
-    // localStorage.clear()
-    // localStorage.removeItem("Ключ")
-    let sUsrs = <string>localStorage.getItem('users');
+    let sUsrs = <string>localStorage.getItem(this.usersKey);
+
     let aUser: ifUser[] = [];
     let oUser = this.oFormSignIn.value;
     //проверяем существование localstore пользователей
@@ -40,17 +42,17 @@ export class StartpageComponent implements OnInit {
       let bExistUser = aUser.some(e => e.login == oUser.login && e.password == oUser.password);
       if (bExistUser) {
         this.router.navigateByUrl('task');
-      } else window.alert('Неверный логин или пароль!');
-    }
+      } else  this._snackBar.open(i18n.BAD_AUTH); 
+    } else this._snackBar.open(i18n.USER_NOT_EXIST); 
 
   }
   fnAddUsr() {
-    let sUsrs = <string>localStorage.getItem('users');
+    let sUsrs = <string>localStorage.getItem(this.usersKey);
     let aUser: ifUser[] = [];
     let oNewUser = this.oFormAddUsr.value;
     //Проверка пароль и повторный пароль
     if (oNewUser.password !== oNewUser.passwordRepeat) {
-      window.alert('Пароль отличается');
+      this._snackBar.open(i18n.USER_EXIST_UP_PASS);
       return
     }
     //Если localstore пользователей уже существует
@@ -58,7 +60,7 @@ export class StartpageComponent implements OnInit {
       aUser = JSON.parse(sUsrs);
       let bExistUser = aUser.some(e => e.login == oNewUser.login);
       if (bExistUser) {
-        console.log('Данный пользователь уже существует. Пароль обнавлён');
+        this._snackBar.open(i18n.USER_EXIST_UP_PASS);
       }
     }
     //добавляем пользователя
@@ -68,7 +70,7 @@ export class StartpageComponent implements OnInit {
     this.bRegistration = !this.bRegistration;
     this.oFormAddUsr.reset()
     //Успешная регистрация
-    window.alert(`Пользователь ${oNewUser.login} зарегистрирован.`);
+    this._snackBar.open(i18n.USER_REGISTERED(oNewUser.login));
   }
 
 }
