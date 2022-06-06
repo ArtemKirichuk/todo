@@ -2,15 +2,15 @@
   <form [formGroup]="oFormAddUsr" class="form" (submit)="fnAddUsr()">
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="login">Логин</mat-label>
-      <input id="login" required formControlName="login" type="text" matInput />
+      <input id="login" formControlName="login" type="text" matInput />
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="password">Пароль</mat-label>
-      <input id="password" required formControlName="password" type="password" matInput />
+      <input id="password" formControlName="password" type="password" matInput />
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="passwordRepeat">Введите пароль повторно</mat-label>
-      <input id="passwordRepeat" required formControlName="passwordRepeat" type="password" matInput />
+      <input id="passwordRepeat" formControlName="passwordRepeat" type="password" matInput />
     </mat-form-field>
 
     <button mat-button type="submit" [disabled]="!oFormAddUsr.valid">
@@ -27,11 +27,11 @@
   <form [formGroup]="oFormSignIn" class="form" (submit)=" fnSignIn()">
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="login">Логин</mat-label>
-      <input id="login" required formControlName="login" type="text" matInput />
+      <input id="login" formControlName="login" type="text" matInput />
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="passwordReg">Пароль</mat-label>
-      <input id="passwordReg" required formControlName="password" type="password" matInput />
+      <input id="passwordReg" formControlName="password" type="password" matInput />
     </mat-form-field>
 
     <button mat-button [disabled]="!oFormSignIn.valid" type="submit">

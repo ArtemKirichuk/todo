@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ifTask } from 'src/interfaces';
 import { TaskService } from 'src/app/task.service';
@@ -12,11 +12,11 @@ import { TaskService } from 'src/app/task.service';
 export class DialogTaskComponent implements OnInit {
 
   oFormTask = new FormGroup({
-    name: new FormControl(this.oTask?.name),
-    dateStart: new FormControl(this.oTask?.dateStart),
-    dateEnd: new FormControl(this.oTask?.dateEnd),
-    priority: new FormControl(this.oTask?.priority),
-    category: new FormControl(this.oTask?.category)
+    name: new FormControl(this.oTask?.name,[Validators.required]),
+    dateStart: new FormControl(this.oTask?.dateStart,[Validators.required]),
+    dateEnd: new FormControl(this.oTask?.dateEnd,[Validators.required]),
+    priority: new FormControl(this.oTask?.priority,[Validators.required]),
+    category: new FormControl(this.oTask?.category,[Validators.required])
   })
   bCreate:boolean;
   constructor(

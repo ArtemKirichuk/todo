@@ -23,7 +23,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
   aDisplayedColumns: string[] = []
   selection = new SelectionModel<ifTask>(false, []);
-  // @ViewChild(MatSort) sort!: MatSort;
+
   constructor(
     public taskService: TaskService,
     public dialogTask: MatDialog,

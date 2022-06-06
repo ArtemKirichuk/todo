@@ -6,26 +6,26 @@
 
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="name">Название задачи</mat-label>
-            <input id="name" required formControlName="name" type="text" matInput />
+            <input id="name" formControlName="name" type="text" matInput />
         </mat-form-field>
 
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Дата начала</mat-label>
-            <input matInput [matDatepicker]="dateStart" formControlName="dateStart" required>
+            <input matInput [matDatepicker]="dateStart" formControlName="dateStart">
             <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
             <mat-datepicker-toggle matSuffix [for]="dateStart"></mat-datepicker-toggle>
             <mat-datepicker #dateStart></mat-datepicker>
         </mat-form-field>
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Дата завершения</mat-label>
-            <input matInput [matDatepicker]="dateEnd" formControlName="dateEnd" required>
+            <input matInput [matDatepicker]="dateEnd" formControlName="dateEnd">
             <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
             <mat-datepicker-toggle matSuffix [for]="dateEnd"></mat-datepicker-toggle>
             <mat-datepicker #dateEnd></mat-datepicker>
         </mat-form-field>
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="priority">Приоритет</mat-label>
-            <input id="priority" type="number" required formControlName="priority" matInput />
+            <input id="priority" type="number" formControlName="priority" matInput />
         </mat-form-field>
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="category">Категория</mat-label>

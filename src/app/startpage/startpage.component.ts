@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ifUser } from 'src/interfaces';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,13 +12,13 @@ import { i18n } from 'src/i18n';
 })
 export class StartpageComponent implements OnInit {
   oFormAddUsr = new FormGroup({
-    login: new FormControl(''),
-    password: new FormControl(''),
-    passwordRepeat: new FormControl('')
+    login: new FormControl('',[Validators.required]),
+    password: new FormControl('',[Validators.required]),
+    passwordRepeat: new FormControl('',[Validators.required])
   })
   oFormSignIn = new FormGroup({
-    login: new FormControl(''),
-    password: new FormControl('')
+    login: new FormControl('',[Validators.required]),
+    password: new FormControl('',[Validators.required])
   })
   aUser: ifUser[] = [];
   usersKey = 'users';
