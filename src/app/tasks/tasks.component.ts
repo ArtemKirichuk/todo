@@ -10,6 +10,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n';
 import { DilogDeleteTaskComponent } from './dilog-delete-task/dilog-delete-task.component';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -27,6 +28,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
   constructor(
     public taskService: TaskService,
     public dialogTask: MatDialog,
+    private router: Router,
     private _snackBar: MatSnackBar) {
     this.aData = new MatTableDataSource(taskService.fnGetTasks());
   }
@@ -47,9 +49,9 @@ export class TasksComponent implements OnInit, AfterViewInit {
   //Дилог добавление задачи
   fnOpenDialogCreateTask() {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    // dialogRef.afterClosed().subscribe(result => {
+    //   console.log(`Dialog result: ${result}`);
+    // });
   }
   //Диалог удаление задачи
   fnOpenDialogDeleteTask() {
@@ -82,5 +84,9 @@ export class TasksComponent implements OnInit, AfterViewInit {
       this._snackBar.open(i18n.SELECT_ROW)
     }
     return isSelect
+  }
+  //
+  fnToStartPage() {
+    this.router.navigateByUrl('')
   }
 }
