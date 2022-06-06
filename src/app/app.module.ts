@@ -11,12 +11,14 @@ import { MaterialModule } from './material/material.module';
 import { DialogTaskComponent } from './tasks/dialog-task/dialog-task.component';
 import {  MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { DilogDeleteTaskComponent } from './tasks/dilog-delete-task/dilog-delete-task.component';
 @NgModule({
   declarations: [
     AppComponent,
     StartpageComponent,
     TasksComponent,
-    DialogTaskComponent
+    DialogTaskComponent,
+    DilogDeleteTaskComponent
   ],
   imports: [
     BrowserModule,

@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n';
+import { DilogDeleteTaskComponent } from './dilog-delete-task/dilog-delete-task.component';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -43,16 +44,26 @@ export class TasksComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.aData.sort = this.sort;
   }
-  //Добавление задачи
-  fnopenDialog() {
+  //Дилог добавление задачи
+  fnOpenDialogCreateTask() {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
   }
-  //Удаление задачи ,row: ifTask
-  fnDeleteRow(event: MouseEvent) {
+  //Диалог удаление задачи
+  fnOpenDialogDeleteTask() {
     if (!this.isSelect()) return
+    const dialogRef = this.dialogTask.open(DilogDeleteTaskComponent);
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result)
+        this.fnDeleteRow()
+    });
+  }
+  //Удаление задачи ,row: ifTask
+  fnDeleteRow() {
+
     let oTask = this.selection.selected[0];
     this.selection.clear();
     this.taskService.fnDeleteTask(oTask);
