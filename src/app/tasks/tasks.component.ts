@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n';
 import { DilogDeleteTaskComponent } from './dilog-delete-task/dilog-delete-task.component';
 import { Router } from '@angular/router';
+import { UserService } from '../user.service';
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
@@ -26,21 +27,29 @@ export class TasksComponent implements OnInit, AfterViewInit {
   selection = new SelectionModel<ifTask>(false, []);
 
   constructor(
-    public taskService: TaskService,
-    public dialogTask: MatDialog,
+    private taskService: TaskService,
+    public userService: UserService,
+    private dialogTask: MatDialog,
     private router: Router,
     private _snackBar: MatSnackBar) {
     this.aData = new MatTableDataSource(taskService.fnGetTasks());
   }
 
   ngOnInit(): void {
+    //авторизация
+    if (!this.userService.sLogin) {
+      this._snackBar.open(i18n.BAD_AUTH)
+      this.router.navigateByUrl('');
+      return
+    }
+    //подписка на получение задачи
     this.taskService.obTask.subscribe((aTasks) => {
       this.aData = new MatTableDataSource(aTasks);
       this.aTask = aTasks.slice();
       this.aData.sort = this.sort;
       //будет ли это работать при нормальном запросе?
       if (this.aTask.length && !this.aDisplayedColumns.length)
-        this.aDisplayedColumns = Object.keys(this.aTask[0]).map((i) => { return i }).concat(['select']);
+        this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category','creator'];
     })
   }
 
@@ -50,9 +59,10 @@ export class TasksComponent implements OnInit, AfterViewInit {
   //Дилог добавление задачи
   fnOpenDialogCreateTask() {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
-    // dialogRef.afterClosed().subscribe(result => {
-    //   console.log(`Dialog result: ${result}`);
-    // });
+    dialogRef.afterClosed().subscribe((oTask: ifTask) => {
+      this.taskService.fnCreateTask(oTask);
+
+    });
   }
   //Диалог удаление задачи
   fnOpenDialogDeleteTask() {
@@ -87,7 +97,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
     return isSelect
   }
   //
-  fnToStartPage() {
+  fnExit() {
+    this.userService.fnSignOut()
     this.router.navigateByUrl('')
   }
 }

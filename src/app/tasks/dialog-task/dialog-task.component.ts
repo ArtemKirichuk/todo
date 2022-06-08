@@ -10,7 +10,7 @@ import { TaskService } from 'src/app/task.service';
   styleUrls: ['./dialog-task.component.scss']
 })
 export class DialogTaskComponent implements OnInit {
-
+  
   oFormTask = new FormGroup({
     name: new FormControl(this.oTask?.name,[Validators.required]),
     dateStart: new FormControl(this.oTask?.dateStart,[Validators.required]),
@@ -19,24 +19,24 @@ export class DialogTaskComponent implements OnInit {
     category: new FormControl(this.oTask?.category,[Validators.required])
   })
   bCreate:boolean;
+  
   constructor(
-    public taskService: TaskService,
+    private taskService: TaskService,
     private dialogTask: MatDialogRef<DialogTaskComponent>,
     @Inject(MAT_DIALOG_DATA) public oTask: ifTask) {
       this.bCreate = oTask? false:true;
+     
   }
 
   ngOnInit(): void {}
   //Создать задачу
-  fnCreteTask() {
-    // oFormTask.
-    let oTask: ifTask = this.oFormTask.value;
-    this.taskService.fnCreateTask(oTask);
-    const dialogRef = this.dialogTask.close();
-  }
+  // fnCreteTask() {
+  //   this.oTask = this.oFormTask.value
+  //   // const dialogRef = this.dialogTask.close();
+  // }
   //Сохранить изменения
   fnSaveRow(){
-    let oTask: ifTask = this.oFormTask.value;
+    let oTask: ifTask =  Object.assign(this.oTask,this.oFormTask.value) 
     this.taskService.fnEditTask(oTask, this.oTask);
   }
 }

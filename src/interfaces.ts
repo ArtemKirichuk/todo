@@ -8,4 +8,5 @@ export interface ifTask {
     dateEnd: Date
     priority:number
     category:string
+    creator:string
 }

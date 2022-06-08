@@ -1,4 +1,5 @@
-<form [formGroup]="oFormTask" class="form" (submit)="fnCreteTask()">
+<!-- (submit)="fnCreteTask()" -->
+<form [formGroup]="oFormTask" class="form" >
     <h2 mat-dialog-title>Создание задачи</h2>
     <mat-dialog-content class="mat-typography">
         <!-- <h3>Develop across all platforms</h3> -->
@@ -37,7 +38,7 @@
     </mat-dialog-content>
     <mat-dialog-actions align="end">
         <button mat-button mat-dialog-close>Отмена</button>
-        <button mat-button *ngIf="bCreate" [disabled]="!oFormTask.valid" type="sunmit">Создать</button>
+        <button mat-button *ngIf="bCreate"  [disabled]="!oFormTask.valid" [mat-dialog-close]="oFormTask.value" >Создать</button>
         <button mat-button *ngIf="!bCreate" [disabled]="!oFormTask.valid" mat-dialog-close (click)="fnSaveRow()">Сохранить</button>
     </mat-dialog-actions>
 </form>
