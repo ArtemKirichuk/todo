@@ -12,18 +12,22 @@ import { DialogTaskComponent } from './tasks/dialog-task/dialog-task.component';
 import {  MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { DilogDeleteTaskComponent } from './tasks/dilog-delete-task/dilog-delete-task.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './auth.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
     StartpageComponent,
     TasksComponent,
     DialogTaskComponent,
-    DilogDeleteTaskComponent
+    DilogDeleteTaskComponent,
+    
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    
+    HttpClientModule,
     RouterModule.forRoot([
       { path: '', component: StartpageComponent },
       { path: 'task', component: TasksComponent },
@@ -33,7 +37,8 @@ import { DilogDeleteTaskComponent } from './tasks/dilog-delete-task/dilog-delete
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'ru'},
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}},
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })

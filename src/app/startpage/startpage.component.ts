@@ -4,6 +4,7 @@ import { ifUser } from 'src/interfaces';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n'; 
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-startpage',
@@ -26,12 +27,14 @@ export class StartpageComponent implements OnInit {
   bRegistration: boolean = false;
   constructor(
     private _snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private auth:AuthService
   ) { }
 
   ngOnInit(): void {
   }
   fnSignIn() {
+    // this.auth.getUser();
     let sUsrs = <string>localStorage.getItem(this.usersKey);
 
     let aUser: ifUser[] = [];
