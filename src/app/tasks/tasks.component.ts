@@ -37,6 +37,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.taskService.obTask.subscribe((aTasks) => {
       this.aData = new MatTableDataSource(aTasks);
       this.aTask = aTasks.slice();
+      this.aData.sort = this.sort;
       //будет ли это работать при нормальном запросе?
       if (this.aTask.length && !this.aDisplayedColumns.length)
         this.aDisplayedColumns = Object.keys(this.aTask[0]).map((i) => { return i }).concat(['select']);
