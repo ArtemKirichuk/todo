@@ -49,7 +49,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
       this.aData.sort = this.sort;
       //будет ли это работать при нормальном запросе?
       if (this.aTask.length && !this.aDisplayedColumns.length)
-        this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category','creator'];
+        this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'creator'];
     })
   }
 
@@ -60,7 +60,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
   fnOpenDialogCreateTask() {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
     dialogRef.afterClosed().subscribe((oTask: ifTask) => {
-      this.taskService.fnCreateTask(oTask);
+      if (oTask)
+        this.taskService.fnCreateTask(oTask);
 
     });
   }
@@ -69,7 +70,6 @@ export class TasksComponent implements OnInit, AfterViewInit {
     if (!this.isSelect()) return
     const dialogRef = this.dialogTask.open(DilogDeleteTaskComponent);
     dialogRef.afterClosed().subscribe(result => {
-
       if (result)
         this.fnDeleteRow()
     });

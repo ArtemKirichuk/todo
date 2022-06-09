@@ -8,21 +8,23 @@
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="name">Название задачи</mat-label>
             <input id="name" formControlName="name" type="text" matInput />
+            
         </mat-form-field>
 
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Дата начала</mat-label>
-            <input matInput [matDatepicker]="dateStart" formControlName="dateStart">
+            <input matInput [matDatepicker]="dateStartRef" (dateChange)="fnDateChange()" formControlName="dateStart">
             <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
-            <mat-datepicker-toggle matSuffix [for]="dateStart"></mat-datepicker-toggle>
-            <mat-datepicker #dateStart></mat-datepicker>
+            <mat-datepicker-toggle matSuffix [for]="dateStartRef"></mat-datepicker-toggle>
+            <mat-datepicker #dateStartRef></mat-datepicker>
         </mat-form-field>
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Дата завершения</mat-label>
-            <input matInput [matDatepicker]="dateEnd" formControlName="dateEnd">
+            <input matInput [matDatepicker]="dateEndRef" (dateChange)="fnDateChange()" formControlName="dateEnd">
             <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
-            <mat-datepicker-toggle matSuffix [for]="dateEnd"></mat-datepicker-toggle>
-            <mat-datepicker #dateEnd></mat-datepicker>
+            <mat-datepicker-toggle matSuffix [for]="dateEndRef"></mat-datepicker-toggle>
+            <mat-datepicker #dateEndRef></mat-datepicker>
+            <mat-error *ngIf="dateEnd.errors?.['errorDate']">Дата завершения меньше даты начала.</mat-error>
         </mat-form-field>
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="priority">Приоритет</mat-label>
