@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
-import { ifTask } from 'src/interfaces';
+import { ifTask } from 'src/app/shared/interfaces';
 import { UserService } from './user.service';
 
 @Injectable({

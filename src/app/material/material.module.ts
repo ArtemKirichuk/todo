@@ -13,6 +13,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { MatSortModule } from '@angular/material/sort';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatCardModule} from '@angular/material/card';
+import {MatSelectModule} from '@angular/material/select';
 // MatMomentDateModule
 @NgModule({
   exports: [
@@ -27,7 +28,8 @@ import {MatCardModule} from '@angular/material/card';
     MatRadioModule,
     MatSortModule,
     MatSnackBarModule,
-    MatCardModule
+    MatCardModule,
+    MatSelectModule
   ],
   imports: [
     
@@ -42,7 +44,8 @@ import {MatCardModule} from '@angular/material/card';
     MatRadioModule,
     MatSortModule,
     MatSnackBarModule,
-    MatCardModule
+    MatCardModule,
+    MatSelectModule
   ]
 })
 export class MaterialModule { }

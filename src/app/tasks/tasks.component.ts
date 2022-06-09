@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ifTask } from 'src/interfaces';
+import { ifTask } from 'src/app/shared/interfaces';
 import { TaskService } from '../task.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogTaskComponent } from './dialog-task/dialog-task.component';
@@ -12,17 +12,19 @@ import { i18n } from 'src/i18n';
 import { DilogDeleteTaskComponent } from './dilog-delete-task/dilog-delete-task.component';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
+import { aPriority, COLOR } from '../shared/data';
+
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
 export class TasksComponent implements OnInit, AfterViewInit {
-
+  aPriority = aPriority
   aTask: ifTask[] = [];
   @ViewChild(MatSort) sort!: MatSort;
   aData: MatTableDataSource<ifTask>;
-
+  COLOR = COLOR
   aDisplayedColumns: string[] = []
   selection = new SelectionModel<ifTask>(false, []);
 
@@ -86,6 +88,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     if (!this.isSelect()) return
     const dialogRef = this.dialogTask.open(DialogTaskComponent, { data: this.selection.selected[0] });
   }
+  
   //Проверка
   isSelect(): boolean {
 

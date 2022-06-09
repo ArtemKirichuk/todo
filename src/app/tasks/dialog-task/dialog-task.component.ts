@@ -1,9 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {  FormControl, FormGroup,  Validators } from '@angular/forms';
 import {  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ifTask } from 'src/interfaces';
+import { ifTask } from 'src/app/shared/interfaces';
 import { TaskService } from 'src/app/task.service';
 import { clValidator } from 'src/app/shared/fn.validator';
+import { aPriority } from 'src/app/shared/data';
 
 @Component({
   selector: 'app-dialog-task',
@@ -11,7 +12,7 @@ import { clValidator } from 'src/app/shared/fn.validator';
   styleUrls: ['./dialog-task.component.scss']
 })
 export class DialogTaskComponent implements OnInit {
-  
+  aPriority = aPriority
   oFormTask = new FormGroup({
     name: new FormControl(this.oTask?.name,[Validators.required]),
     dateStart: new FormControl(this.oTask?.dateStart,[
