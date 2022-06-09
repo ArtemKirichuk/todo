@@ -18,7 +18,7 @@
         <!-- Дата завершения -->
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Дата завершения</mat-label>
-            <input matInput [matDatepicker]="dateEndRef" (dateChange)="fnDateChange()" formControlName="dateEnd">
+            <input matInput [matDatepicker]="dateEndRef" [matDatepickerFilter]="fnGEToday" (dateChange)="fnDateChange()" formControlName="dateEnd">
             
             <mat-datepicker-toggle matSuffix [for]="dateEndRef"></mat-datepicker-toggle>
             <mat-datepicker #dateEndRef></mat-datepicker>

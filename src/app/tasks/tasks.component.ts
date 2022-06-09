@@ -99,6 +99,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
     }
     return isSelect
   }
+  //запрет выбор дней на календаре
+ 
   //
   fnExit() {
     this.userService.fnSignOut()

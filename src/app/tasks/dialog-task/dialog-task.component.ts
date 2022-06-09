@@ -54,5 +54,9 @@ export class DialogTaskComponent implements OnInit {
     let oTask: ifTask =  Object.assign(this.oTask,this.oFormTask.value) 
     this.taskService.fnEditTask(oTask, this.oTask);
   }
+  fnGEToday = (d: Date | null): boolean => {
+    const day = (d || new Date());
+    return day !== null && day.getTime() >= new Date().setHours(0,0,0,0)
+  };
 }
 
