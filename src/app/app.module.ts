@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
@@ -12,6 +12,9 @@ import { DialogTaskComponent } from './tasks/dialog-task/dialog-task.component';
 import {  MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { DilogDeleteTaskComponent } from './tasks/dilog-delete-task/dilog-delete-task.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+ 
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,6 +24,9 @@ import { DilogDeleteTaskComponent } from './tasks/dilog-delete-task/dilog-delete
     DilogDeleteTaskComponent
   ],
   imports: [
+    FormsModule,
+    MatInputModule,
+    MatFormFieldModule,
     BrowserModule,
     ReactiveFormsModule,
     

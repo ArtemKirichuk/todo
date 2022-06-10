@@ -9,4 +9,8 @@ export interface ifTask {
     priority:number
     category:string
     creator:string
+    complete:boolean
+}
+export interface ifFilter{
+    [key:string]:string|boolean
 }

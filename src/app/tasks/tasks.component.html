@@ -6,12 +6,16 @@
 
     <mat-form-field appearance="fill" class="full-width">
         <mat-label>Категория</mat-label>
-        <!-- multiple [(value)]="aCategory" -->
         <mat-select (valueChange)="filterChange($event)">
             <mat-option></mat-option>
             <mat-option *ngFor="let sCategory of aCategory" [value]="sCategory">{{sCategory}}</mat-option>
         </mat-select>
     </mat-form-field>
+    <!-- Завершить -->
+
+
+    <mat-checkbox  [(ngModel)]="bComplete"  (change)="fnComplete()">Завершённые</mat-checkbox>
+
 </mat-card>
 
 <div class="container">

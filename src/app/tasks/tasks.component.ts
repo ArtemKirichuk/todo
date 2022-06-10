@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ifTask } from 'src/app/shared/interfaces';
+import { ifTask ,ifFilter} from 'src/app/shared/interfaces';
 import { TaskService } from '../task.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogTaskComponent } from './dialog-task/dialog-task.component';
@@ -21,7 +21,8 @@ import { createFilter } from '../shared/helper';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
-// 
+ 
+
 export class TasksComponent implements OnInit,AfterViewInit {
   aPriority = aPriority
   @ViewChild(MatSort) sort!: MatSort;
@@ -30,7 +31,8 @@ export class TasksComponent implements OnInit,AfterViewInit {
   aDisplayedColumns: string[] = []
   selection = new SelectionModel<ifTask>(false, []);
   aCategory: string[] = []
-  oFilterValues!: Object
+  oFilterValues: ifFilter={}
+  bComplete:boolean=false;
   constructor(
     private taskService: TaskService,
     public userService: UserService,
@@ -52,8 +54,10 @@ export class TasksComponent implements OnInit,AfterViewInit {
       this.aData = new MatTableDataSource(aTasks);
       this.aData.filterPredicate = createFilter();
       //категории
+      
       this.aCategory = this.taskService.aCategory.slice()
       //фильтры
+      this.oFilterValues['complete'] = this.bComplete
       this.aData.filter = JSON.stringify(this.oFilterValues)
       //сортировка
       this.aData.sort = this.sort;
@@ -61,9 +65,14 @@ export class TasksComponent implements OnInit,AfterViewInit {
       this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'creator'];
     })
   }
+  fnComplete(){
+    // this.bNotComplete
+    this.oFilterValues['complete'] = this.bComplete
+    this.aData.filter = JSON.stringify(this.oFilterValues)
+  }
   // Фильтр
   filterChange(value: string) {
-    this.oFilterValues = { 'category': value };
+    this.oFilterValues['category']= value ;
     this.aData.filter = JSON.stringify(this.oFilterValues)
   }
 

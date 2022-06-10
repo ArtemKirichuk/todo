@@ -1,8 +1,8 @@
 <!-- (submit)="fnCreteTask()" -->
-<form [formGroup]="oFormTask" class="form">
-    <h2 mat-dialog-title>Создание задачи</h2>
-    <mat-dialog-content class="mat-typography">
 
+<h2 mat-dialog-title>Создание задачи</h2>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="oFormTask" class="form">
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="name">Название задачи</mat-label>
             <input id="name" formControlName="name" type="text" matInput />
@@ -42,13 +42,24 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>
+        <!-- Завершить -->
+        <mat-form-field *ngIf="!bCreate" class="example-form-field" appearance="fill">
+            <input matInput [hidden]="true" >
+            <mat-checkbox formControlName="complete">Завершить</mat-checkbox>
+        </mat-form-field>
 
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-        <button mat-button mat-dialog-close>Отмена</button>
-        <button mat-button *ngIf="bCreate" [disabled]="!oFormTask.valid"
-            [mat-dialog-close]="oFormTask.value">Создать</button>
-        <button mat-button *ngIf="!bCreate" [disabled]="!oFormTask.valid" mat-dialog-close
-            (click)="fnSaveRow()">Сохранить</button>
-    </mat-dialog-actions>
-</form>
+        <!-- <mat-form-field  *ngIf="!bCreate" class="example-form-field" appearance="fill">
+            <mat-label>Завершить</mat-label>
+            
+            <mat-checkbox formControlName="category">Hide required marker</mat-checkbox>
+            
+        </mat-form-field> -->
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Отмена</button>
+    <button mat-button *ngIf="bCreate" [disabled]="!oFormTask.valid"
+        [mat-dialog-close]="oFormTask.value">Создать</button>
+    <button mat-button *ngIf="!bCreate" [disabled]="!oFormTask.valid" mat-dialog-close
+        (click)="fnSaveRow()">Сохранить</button>
+</mat-dialog-actions>

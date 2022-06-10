@@ -25,7 +25,8 @@ export class DialogTaskComponent implements OnInit {
       clValidator.dateEnd()
     ]),
     priority: new FormControl(this.oTask?.priority, [Validators.required]),
-    category: new FormControl(this.oTask?.category, [Validators.required])
+    category: new FormControl(this.oTask?.category, [Validators.required]),
+    complete: new FormControl(!!this.oTask?.complete)
   })
 
   get dateStart() { return this.oFormTask.get('dateStart'); }
