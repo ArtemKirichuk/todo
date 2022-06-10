@@ -1,14 +1,18 @@
 .mat-table {
-    margin: 2rem auto;
+    margin:  auto;
     width: 100%;
 }
-
+.container{
+    margin-top: 20px;
+}
 :host {
     display: block;
     margin: 0 auto;
     width: 800px;
 }
-
+.full-width{
+    width: 100%;
+}
 th.mat-sort-header-sorted {
     color: black;
 }

@@ -2,7 +2,7 @@
 <form [formGroup]="oFormTask" class="form">
     <h2 mat-dialog-title>Создание задачи</h2>
     <mat-dialog-content class="mat-typography">
-        
+
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label for="name">Название задачи</mat-label>
             <input id="name" formControlName="name" type="text" matInput />
@@ -18,8 +18,9 @@
         <!-- Дата завершения -->
         <mat-form-field class="example-form-field" appearance="fill">
             <mat-label>Дата завершения</mat-label>
-            <input matInput [matDatepicker]="dateEndRef" [matDatepickerFilter]="fnGEToday" (dateChange)="fnDateChange()" formControlName="dateEnd">
-            
+            <input matInput [matDatepicker]="dateEndRef" [matDatepickerFilter]="fnGEToday" (dateChange)="fnDateChange()"
+                formControlName="dateEnd">
+
             <mat-datepicker-toggle matSuffix [for]="dateEndRef"></mat-datepicker-toggle>
             <mat-datepicker #dateEndRef></mat-datepicker>
             <mat-error *ngIf="dateEnd.errors?.['errorDate']">Дата завершения меньше даты начала.</mat-error>
@@ -33,11 +34,14 @@
         </mat-form-field>
         <!-- Категория -->
         <mat-form-field class="example-form-field" appearance="fill">
-            <mat-label for="category">Категория</mat-label>
-            <input id="category" formControlName="category" matInput />
+            <mat-label>Категория</mat-label>
+            <input type="text" matInput formControlName="category" [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-autocomplete>
         </mat-form-field>
-
-
 
     </mat-dialog-content>
     <mat-dialog-actions align="end">

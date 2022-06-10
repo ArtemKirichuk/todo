@@ -14,6 +14,7 @@ import { MatSortModule } from '@angular/material/sort';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatCardModule} from '@angular/material/card';
 import {MatSelectModule} from '@angular/material/select';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 // MatMomentDateModule
 @NgModule({
   exports: [
@@ -29,7 +30,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatSortModule,
     MatSnackBarModule,
     MatCardModule,
-    MatSelectModule
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   imports: [
     
@@ -45,7 +47,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatSortModule,
     MatSnackBarModule,
     MatCardModule,
-    MatSelectModule
+    MatSelectModule,
+    MatAutocompleteModule
   ]
 })
 export class MaterialModule { }

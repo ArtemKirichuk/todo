@@ -13,21 +13,24 @@ import { DilogDeleteTaskComponent } from './dilog-delete-task/dilog-delete-task.
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { aPriority, COLOR } from '../shared/data';
+import { createFilter } from '../shared/helper';
+
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
-export class TasksComponent implements OnInit, AfterViewInit {
+// 
+export class TasksComponent implements OnInit,AfterViewInit {
   aPriority = aPriority
-  aTask: ifTask[] = [];
   @ViewChild(MatSort) sort!: MatSort;
   aData: MatTableDataSource<ifTask>;
   COLOR = COLOR
   aDisplayedColumns: string[] = []
   selection = new SelectionModel<ifTask>(false, []);
-
+  aCategory: string[] = []
+  oFilterValues!: Object
   constructor(
     private taskService: TaskService,
     public userService: UserService,
@@ -47,12 +50,21 @@ export class TasksComponent implements OnInit, AfterViewInit {
     //подписка на получение задачи
     this.taskService.obTask.subscribe((aTasks) => {
       this.aData = new MatTableDataSource(aTasks);
-      this.aTask = aTasks.slice();
+      this.aData.filterPredicate = createFilter();
+      //категории
+      this.aCategory = this.taskService.aCategory.slice()
+      //фильтры
+      this.aData.filter = JSON.stringify(this.oFilterValues)
+      //сортировка
       this.aData.sort = this.sort;
-      //будет ли это работать при нормальном запросе?
-      if (this.aTask.length && !this.aDisplayedColumns.length)
-        this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'creator'];
+      //Колонки
+      this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'creator'];
     })
+  }
+  // Фильтр
+  filterChange(value: string) {
+    this.oFilterValues = { 'category': value };
+    this.aData.filter = JSON.stringify(this.oFilterValues)
   }
 
   ngAfterViewInit() {
@@ -88,10 +100,9 @@ export class TasksComponent implements OnInit, AfterViewInit {
     if (!this.isSelect()) return
     const dialogRef = this.dialogTask.open(DialogTaskComponent, { data: this.selection.selected[0] });
   }
-  
+
   //Проверка
   isSelect(): boolean {
-
     let oTask = this.selection.selected[0];
     let isSelect = oTask ? true : false;
     if (!isSelect) {
@@ -100,7 +111,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     return isSelect
   }
   //запрет выбор дней на календаре
- 
+
   //
   fnExit() {
     this.userService.fnSignOut()

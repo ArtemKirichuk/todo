@@ -12,16 +12,27 @@ export class TaskService implements OnInit {
   sTaskKey = 'tasks/';
   sTaskUserKey!:string;
   aTasks: ifTask[] = [];
+  aCategory: string[] = []
   constructor(private userService: UserService) {
     this.userService.obUsers.subscribe((sLogin) => {
       this.sTaskUserKey = this.sTaskKey +sLogin
       let sTasks = <string>localStorage.getItem(this.sTaskUserKey);
       this.aTasks = sTasks ? JSON.parse(sTasks) : [];
       this.obTask = new BehaviorSubject<ifTask[]>(this.aTasks)
+      this.obTask.subscribe((aTasks)=>{
+        this.aCategory =[]
+        //Собираем категории
+        this.aCategory = aTasks.reduce((acc, v) => {
+          acc.indexOf(v.category) === -1 && acc.push(v.category)
+          return acc
+        }, this.aCategory)
+      })
     })
 
   }
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    
+  }
   fnCreateTask(oTask: ifTask) {
     oTask.creator = this.userService.sLogin
     this.aTasks.push(oTask);
