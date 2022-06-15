@@ -31,9 +31,7 @@ export class StartpageComponent implements OnInit {
     private userService: UserService
   ) { }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {  }
   fnSignIn() {
 
     let oInputUser = this.oFormSignIn.value;
