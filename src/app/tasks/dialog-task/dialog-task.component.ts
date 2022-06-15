@@ -71,8 +71,8 @@ export class DialogTaskComponent implements OnInit {
   }
   //Сохранить изменения
   fnSaveRow() {
-    let oTask: ifTask = Object.assign(this.oTask, this.oFormTask.value)
-    this.taskService.fnEditTask(oTask, this.oTask);
+    Object.assign(this.oTask, this.oFormTask.value)
+    this.taskService.fnEditTask(this.oTask);
   }
   fnGEToday = (d: Date | null): boolean => {
     const day = (d || new Date());

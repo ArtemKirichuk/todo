@@ -38,10 +38,12 @@ export class StartpageComponent implements OnInit {
 
     let oInputUser = this.oFormSignIn.value;
     //проверяем существование localstore пользователей
-    if (this.userService.fnSignIn(oInputUser)) {
-      this.router.navigateByUrl('task');
-    } else this._snackBar.open(i18n.USER_NOT_EXIST);
-
+    this.userService.fnSignIn(oInputUser).subscribe((bAuth: boolean) => {
+      if (bAuth) {
+        this.userService.fnSetLogin(oInputUser.login)
+        this.router.navigateByUrl('task');
+      } else this._snackBar.open(i18n.USER_NOT_EXIST);
+    })
   }
   fnAddUsr() {
     let oNewUser = this.oFormAddUsr.value;
@@ -50,11 +52,13 @@ export class StartpageComponent implements OnInit {
       this._snackBar.open(i18n.USER_EXIST_UP_PASS);
       return
     }
-    let sMsg = this.userService.setUser(oNewUser)
-    this._snackBar.open(sMsg)
-    //выходим с регистрации
-    this.bRegistration = !this.bRegistration;
-    this.oFormAddUsr.reset()
+    this.userService.createUser(oNewUser).subscribe((e) => {
+      let sMsg = e
+      this._snackBar.open(sMsg)
+      //выходим с регистрации
+      this.bRegistration = !this.bRegistration;
+      this.oFormAddUsr.reset()
+    })
 
 
   }

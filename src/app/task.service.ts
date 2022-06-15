@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, map, Observable, Subject, switchMap } from 'rxjs';
 import { ifTask } from 'src/app/shared/interfaces';
 import { UserService } from './user.service';
 
@@ -8,52 +9,63 @@ import { UserService } from './user.service';
 })
 
 export class TaskService implements OnInit {
-  obTask!: BehaviorSubject<ifTask[]>;
+  // obTask!: BehaviorSubject<ifTask[]>;
   sTaskKey = 'tasks/';
-  sTaskUserKey!:string;
+  sTaskUserKey!: string;
   aTasks: ifTask[] = [];
   aCategory: string[] = []
-  constructor(private userService: UserService) {
-    this.userService.obUsers.subscribe((sLogin) => {
-      this.sTaskUserKey = this.sTaskKey +sLogin
-      let sTasks = <string>localStorage.getItem(this.sTaskUserKey);
-      this.aTasks = sTasks ? JSON.parse(sTasks) : [];
-      this.obTask = new BehaviorSubject<ifTask[]>(this.aTasks)
-      this.obTask.subscribe((aTasks)=>{
-        this.aCategory =[]
+  obTask: Subject<ifTask[]> = new Subject<ifTask[]>()
+  constructor(
+    private userService: UserService,
+    private http: HttpClient
+  ) {
+    // this.userService.obUsers.subscribe((sLogin) => {
+    // this.sTaskUserKey = this.sTaskKey +sLogin
+    // let sTasks = <string>localStorage.getItem(this.sTaskUserKey);
+    // this.aTasks = sTasks ? JSON.parse(sTasks) : [];
+    // this.obTask = new BehaviorSubject<ifTask[]>(this.aTasks)
+    // this.obTask.subscribe((aTasks) => {
+    //   this.aCategory = []
+    //   //Собираем категории
+    //   this.aCategory = aTasks.reduce((acc, v) => {
+    //     acc.indexOf(v.category) === -1 && acc.push(v.category)
+    //     return acc
+    //   }, this.aCategory)
+    // })
+    // })
+  }
+  ngOnInit(): void { }
+
+  fnCreateTask(oTask: ifTask) {
+    this.http.post('tasks', oTask).subscribe((e) => {
+      this.fnGetTasks()
+    })
+    // this.obTask.next(this.aTasks);
+  }
+  fnDeleteTask(oTask: ifTask) {
+    this.http.delete('tasks', { params: { 'id': oTask.id } })
+      .subscribe((res) => {
+        this.fnGetTasks()
+      })
+  }
+  fnEditTask( oEditTask: ifTask) {
+    
+    this.http.put('tasks', oEditTask)
+      .subscribe((res) => {
+        this.fnGetTasks()
+      })
+  }
+  fnGetTasks() {
+    this.http.get<ifTask[]>('tasks')
+      .subscribe((aTasks: ifTask[]) => {
         //Собираем категории
+        this.aCategory = []
         this.aCategory = aTasks.reduce((acc, v) => {
           acc.indexOf(v.category) === -1 && acc.push(v.category)
           return acc
         }, this.aCategory)
-      })
-    })
-
-  }
-  ngOnInit(): void { 
-    
-  }
-  fnCreateTask(oTask: ifTask) {
-    oTask.creator = this.userService.sLogin
-    this.aTasks.push(oTask);
-    localStorage.setItem(this.sTaskUserKey, JSON.stringify(this.aTasks));
-    this.obTask.next(this.aTasks);
-  }
-  fnDeleteTask(oTask: ifTask) {
-    this.aTasks.splice(this.aTasks.indexOf(oTask), 1);
-    this.aTasks = this.aTasks.slice();
-    this.obTask.next(this.aTasks);
-    localStorage.setItem(this.sTaskUserKey, JSON.stringify(this.aTasks));
-  }
-  fnEditTask(oNewTask: ifTask, oOldTask: ifTask) {
-    // oTask.creator = this.userService.sLogin
-    let nIndex = this.aTasks.indexOf(oOldTask)
-    this.aTasks.splice(nIndex, 1, oNewTask);
-    this.obTask.next(this.aTasks);
-    localStorage.setItem(this.sTaskUserKey, JSON.stringify(this.aTasks));
-  }
-  fnGetTasks() {
-    return this.aTasks;
+        this.obTask.next(aTasks)
+      });
   }
 
 }

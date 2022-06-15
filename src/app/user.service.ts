@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { i18n } from 'src/i18n';
 import { ifUser } from 'src/app/shared/interfaces';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -10,42 +11,26 @@ export class UserService {
   
   usersKey = 'users';
   loginKey ='me';
-  sUsers:string = <string>localStorage.getItem(this.usersKey);
-  aUser: ifUser[] = this.sUsers? JSON.parse(this.sUsers):[];
-  sLogin:string = <string>localStorage.getItem(this.loginKey);
+  sLogin = ''
+  // sLogin:string = <string>localStorage.getItem(this.loginKey);
   obUsers = new BehaviorSubject<string>(this.sLogin)
-  constructor() {
-    // this.sUsers= <string>localStorage.getItem(this.usersKey);
-    // this.aUser = this.sUsers? JSON.parse(this.sUsers):[];
-    // this.sLogin = <string>localStorage.getItem(this.loginKey);
-    // this.obUsers.next(this.sLogin)
-  }
+  constructor(private http:HttpClient) { }
   
-  getUsers() {
-    return this.aUser
+  createUser(oNewUser: ifUser):Observable<string> {
+    return this.http.post<string>('user',oNewUser)
+    // 
   }
-  setUser(oNewUser: ifUser) {
-
-    let bExistUser = this.aUser.some(e => e.login == oNewUser.login);
-
-    //добавляем пользователя
-    this.aUser.push({ login: oNewUser.login, password: oNewUser.password })
-    localStorage.setItem(this.usersKey, JSON.stringify(this.aUser));
-
-    return bExistUser ? i18n.USER_EXIST_UP_PASS : i18n.USER_REGISTERED(oNewUser.login)
-  }
-  fnSignIn(oInputUser: ifUser): boolean {
-    let bExistUser = false;
-    //проверяем существование localstore пользователей
-    bExistUser = this.aUser.some(e => e.login == oInputUser.login && e.password == oInputUser.password);
-    this.sLogin =  bExistUser ? oInputUser.login : '';
-    //сохраняем залогиненого пользователя
-    localStorage.setItem(this.loginKey, this.sLogin);
-    this.obUsers.next(this.sLogin)
-    return bExistUser
+  fnSignIn(oInputUser: ifUser): Observable<boolean> {
+    return this.http.post<boolean>('signIn',oInputUser)
   }
   fnSignOut(){
-    this.sLogin = '';
-    localStorage.removeItem(this.sLogin);
+    this.http.delete('signIn')
+    this.sLogin = ''
+  }
+  fnSetLogin(login:string){
+    this.sLogin = login;
+  }
+  fnCheckAuth():Observable<string>{
+    return this.http.get<string>('user')
   }
 }

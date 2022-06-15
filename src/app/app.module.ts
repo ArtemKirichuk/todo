@@ -15,13 +15,17 @@ import { DilogDeleteTaskComponent } from './tasks/dilog-delete-task/dilog-delete
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
  
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { MainInterceptor } from './fakeServer.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
     StartpageComponent,
     TasksComponent,
     DialogTaskComponent,
-    DilogDeleteTaskComponent
+    DilogDeleteTaskComponent,
+    
   ],
   imports: [
     FormsModule,
@@ -29,7 +33,7 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     BrowserModule,
     ReactiveFormsModule,
-    
+    HttpClientModule,
     RouterModule.forRoot([
       { path: '', component: StartpageComponent },
       { path: 'task', component: TasksComponent },
@@ -39,7 +43,8 @@ import { MatInputModule } from '@angular/material/input';
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'ru'},
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}},
+    {provide: HTTP_INTERCEPTORS, useClass: MainInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })

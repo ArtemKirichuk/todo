@@ -10,6 +10,7 @@ export interface ifTask {
     category:string
     creator:string
     complete:boolean
+    id:number
 }
 export interface ifFilter{
     [key:string]:string|boolean

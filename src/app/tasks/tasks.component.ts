@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ifTask ,ifFilter} from 'src/app/shared/interfaces';
+import { ifTask, ifFilter } from 'src/app/shared/interfaces';
 import { TaskService } from '../task.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DialogTaskComponent } from './dialog-task/dialog-task.component';
@@ -21,9 +21,9 @@ import { createFilter } from '../shared/helper';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss']
 })
- 
 
-export class TasksComponent implements OnInit,AfterViewInit {
+
+export class TasksComponent implements OnInit, AfterViewInit {
   aPriority = aPriority
   @ViewChild(MatSort) sort!: MatSort;
   aData: MatTableDataSource<ifTask>;
@@ -31,48 +31,55 @@ export class TasksComponent implements OnInit,AfterViewInit {
   aDisplayedColumns: string[] = []
   selection = new SelectionModel<ifTask>(false, []);
   aCategory: string[] = []
-  oFilterValues: ifFilter={}
-  bComplete:boolean=false;
+  oFilterValues: ifFilter = {}
+  bComplete: boolean = false;
   constructor(
     private taskService: TaskService,
     public userService: UserService,
     private dialogTask: MatDialog,
     private router: Router,
     private _snackBar: MatSnackBar) {
-    this.aData = new MatTableDataSource(taskService.fnGetTasks());
+    // this.aData = new MatTableDataSource(taskService.fnGetTasks());
+    //Колонки
+    this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'creator'];
+    this.aData = new MatTableDataSource();
   }
 
   ngOnInit(): void {
-    //авторизация
-    if (!this.userService.sLogin) {
-      this._snackBar.open(i18n.BAD_AUTH)
-      this.router.navigateByUrl('');
-      return
-    }
-    //подписка на получение задачи
-    this.taskService.obTask.subscribe((aTasks) => {
-      this.aData = new MatTableDataSource(aTasks);
-      this.aData.filterPredicate = createFilter();
-      //категории
-      
-      this.aCategory = this.taskService.aCategory.slice()
-      //фильтры
-      this.oFilterValues['complete'] = this.bComplete
-      this.aData.filter = JSON.stringify(this.oFilterValues)
-      //сортировка
-      this.aData.sort = this.sort;
-      //Колонки
-      this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'creator'];
+
+    //авторизация. Переписать на гварды
+    this.userService.fnCheckAuth().subscribe((sLogin) => {
+      if (!sLogin) {
+        this._snackBar.open(i18n.BAD_AUTH)
+        this.router.navigateByUrl('');
+        return
+      }
+      this.userService.fnSetLogin(sLogin)
+      //запрашиваем задачи
+      this.taskService.obTask.subscribe((aTasks) => {
+        this.aData = new MatTableDataSource(aTasks);
+        this.aData.filterPredicate = createFilter();
+        //категории
+        this.aCategory = this.taskService.aCategory.slice()
+        //фильтры
+        this.oFilterValues['complete'] = this.bComplete
+        this.aData.filter = JSON.stringify(this.oFilterValues)
+        //сортировка
+        this.aData.sort = this.sort;
+      })
+      //как это сделать лучше.?
+      this.taskService.fnGetTasks()
+
     })
   }
-  fnComplete(){
+  fnComplete() {
     // this.bNotComplete
     this.oFilterValues['complete'] = this.bComplete
     this.aData.filter = JSON.stringify(this.oFilterValues)
   }
   // Фильтр
   filterChange(value: string) {
-    this.oFilterValues['category']= value ;
+    this.oFilterValues['category'] = value;
     this.aData.filter = JSON.stringify(this.oFilterValues)
   }
 
@@ -120,8 +127,6 @@ export class TasksComponent implements OnInit,AfterViewInit {
     return isSelect
   }
   //запрет выбор дней на календаре
-
-  //
   fnExit() {
     this.userService.fnSignOut()
     this.router.navigateByUrl('')
