@@ -2,12 +2,11 @@
     <button mat-button (click)="fnExit()">Выйти: {{userService.sLogin}}</button>
 </mat-card>
 <mat-card>
-
     <mat-form-field appearance="fill" class="full-width">
         <mat-label>Категория</mat-label>
         <mat-select (selectionChange)="fnFilterCategory($event)">
             <mat-option></mat-option>
-            <mat-option *ngFor="let category of aCategory" [value]="category">{{category}}</mat-option>
+            <mat-option *ngFor="let category of ( taskService.obCategory | async )" [value]="category">{{category}}</mat-option>
         </mat-select>
     </mat-form-field>
     <!-- Завершить -->
@@ -25,8 +24,9 @@
     <button mat-button type="button" color="warn" (click)="fnOpenDialogDeleteTask()">
         Удалить задачу
     </button>
-
+    
     <table mat-table [dataSource]="aData" matSort class="mat-elevation-z8">
+    <!-- <table mat-table [dataSource]="(taskService.obTask | async)!" matSort class="mat-elevation-z8"> -->
         <!-- Checkbox Column -->
         <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef>

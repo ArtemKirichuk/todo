@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ifTask } from 'src/app/shared/interfaces';
@@ -10,7 +10,8 @@ import { map, Observable, startWith } from 'rxjs';
 @Component({
   selector: 'app-dialog-task',
   templateUrl: './dialog-task.component.html',
-  styleUrls: ['./dialog-task.component.scss']
+  styleUrls: ['./dialog-task.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogTaskComponent implements OnInit {
   aPriority = aPriority
@@ -39,16 +40,18 @@ export class DialogTaskComponent implements OnInit {
   bCreate: boolean;
 
   constructor(
-    private taskService: TaskService,
+    public taskService: TaskService,
     private dialogTask: MatDialogRef<DialogTaskComponent>,
     @Inject(MAT_DIALOG_DATA) public oTask: ifTask
   ) {
     this.bCreate = oTask ? false : true;
-    this.aCategory = taskService.aCategory;
+    this.aCategory = taskService.aCategory
+    
 
   }
 
   ngOnInit(): void {
+    
     this.filteredOptions = this.category.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || '')),
@@ -57,14 +60,10 @@ export class DialogTaskComponent implements OnInit {
   }
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-
+    // this.taskService.obCategory.subscribe()
     return this.aCategory.filter(sCategoty => sCategoty.toLowerCase().includes(filterValue));
   }
-  //Создать задачу
-  // fnCreteTask() {
-  //   this.oTask = this.oFormTask.value
-  //   // const dialogRef = this.dialogTask.close();
-  // }
+ 
   fnDateChange() {
     this.oFormTask.controls['dateStart'].updateValueAndValidity()
     this.oFormTask.controls['dateEnd'].updateValueAndValidity()

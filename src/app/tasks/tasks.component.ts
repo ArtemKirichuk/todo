@@ -62,8 +62,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
 
         this.aData = new MatTableDataSource(aTasks);
         this.aData.filterPredicate = createFilter();
-        //категории
-        this.aCategory = this.taskService.aCategory.slice()
+
+        // Куда это вытаскивать чтобы работало
         //фильтры
         this.oFilterValues['complete'] = this.bComplete ? true : '';
         this.aData.filter = JSON.stringify(this.oFilterValues)

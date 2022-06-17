@@ -13,27 +13,13 @@ export class TaskService implements OnInit {
   sTaskKey = 'tasks/';
   sTaskUserKey!: string;
   aTasks: ifTask[] = [];
-  aCategory: string[] = []
+  
   obTask: Subject<ifTask[]> = new Subject<ifTask[]>()
+  obCategory: Subject<string[]> = new Subject<string[]>()
   constructor(
     private userService: UserService,
     private http: HttpClient
-  ) {
-    // this.userService.obUsers.subscribe((sLogin) => {
-    // this.sTaskUserKey = this.sTaskKey +sLogin
-    // let sTasks = <string>localStorage.getItem(this.sTaskUserKey);
-    // this.aTasks = sTasks ? JSON.parse(sTasks) : [];
-    // this.obTask = new BehaviorSubject<ifTask[]>(this.aTasks)
-    // this.obTask.subscribe((aTasks) => {
-    //   this.aCategory = []
-    //   //Собираем категории
-    //   this.aCategory = aTasks.reduce((acc, v) => {
-    //     acc.indexOf(v.category) === -1 && acc.push(v.category)
-    //     return acc
-    //   }, this.aCategory)
-    // })
-    // })
-  }
+  ) { }
   ngOnInit(): void { }
 
   fnCreateTask(oTask: ifTask) {
@@ -48,8 +34,8 @@ export class TaskService implements OnInit {
         this.fnGetTasks()
       })
   }
-  fnEditTask( oEditTask: ifTask) {
-    
+  fnEditTask(oEditTask: ifTask) {
+
     this.http.put('tasks', oEditTask)
       .subscribe((res) => {
         this.fnGetTasks()
@@ -59,17 +45,17 @@ export class TaskService implements OnInit {
     this.http.get<ifTask[]>('tasks')
       .subscribe((aTasks: ifTask[]) => {
         //Собираем категории
-        this.aCategory = []
-        this.aCategory = aTasks.reduce((acc, v) => {
-          acc.indexOf(v.category) === -1 && acc.push(v.category)
-          return acc
-        }, this.aCategory)
         this.obTask.next(aTasks)
+        this.obCategory.next(this.fnCreateCategory(aTasks))
       });
   }
+  aCategory:string[] = [];
+  fnCreateCategory(aTasks: ifTask[]): string[] {
+    this.aCategory = aTasks.reduce((acc, v) => {
+      acc.indexOf(v.category) === -1 && acc.push(v.category)
+      return acc
+    }, [] as string[] )
+    return this.aCategory
 
+  }
 }
-// localStorage.clear()
-// localStorage.removeItem("Ключ")
-//let sUsrs = <string>localStorage.getItem('users');
-//let oUser = this.oFormSignIn.value;
