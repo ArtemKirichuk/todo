@@ -20,12 +20,13 @@ import { TasksComponent } from './tasks.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogTaskComponent } from './dialog-task/dialog-task.component';
 import { DilogDeleteTaskComponent } from './dilog-delete-task/dilog-delete-task.component';
-
+import { TablePipe } from '..//pipes.pipe';
 @NgModule({
   declarations: [ 
     TasksComponent,
     DialogTaskComponent,
-    DilogDeleteTaskComponent
+    DilogDeleteTaskComponent,
+    TablePipe
    ],
   imports: [
     TasksRoutingModule,

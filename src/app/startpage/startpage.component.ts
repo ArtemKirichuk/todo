@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ifUser } from 'src/app/shared/interfaces';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n';
 import { UserService } from '../user.service';
@@ -9,7 +8,8 @@ import { UserService } from '../user.service';
 @Component({
   selector: 'app-startpage',
   templateUrl: './startpage.component.html',
-  styleUrls: ['./startpage.component.scss']
+  styleUrls: ['./startpage.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StartpageComponent implements OnInit {
   oFormAddUsr = new FormGroup({
@@ -19,21 +19,20 @@ export class StartpageComponent implements OnInit {
   })
   oFormSignIn = new FormGroup({
     login: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required])
-  })
-  // aUser: ifUser[] = [];
-  usersKey = 'users';
+    password: new FormControl('', [Validators.required]),
 
+  })
+  usersKey = 'users';
   bRegistration: boolean = false;
   constructor(
     private _snackBar: MatSnackBar,
     private router: Router,
     private userService: UserService
-  ) { }
+  ) {  }
 
-  ngOnInit(): void {  }
+  ngOnInit(): void { }
+
   fnSignIn() {
-
     let oInputUser = this.oFormSignIn.value;
     //проверяем существование localstore пользователей
     this.userService.fnSignIn(oInputUser).subscribe((bAuth: boolean) => {
@@ -57,8 +56,5 @@ export class StartpageComponent implements OnInit {
       this.bRegistration = !this.bRegistration;
       this.oFormAddUsr.reset()
     })
-
-
   }
-
 }

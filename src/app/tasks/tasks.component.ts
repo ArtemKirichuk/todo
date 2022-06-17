@@ -1,12 +1,12 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, AfterContentInit, ChangeDetectorRef } from '@angular/core';
 import { ifTask, ifFilter } from 'src/app/shared/interfaces';
 import { TaskService } from '../task.service';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogTaskComponent } from './dialog-task/dialog-task.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
+
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n';
 import { DilogDeleteTaskComponent } from './dilog-delete-task/dilog-delete-task.component';
@@ -14,14 +14,16 @@ import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { aPriority, COLOR } from '../shared/data';
 import { createFilter } from '../shared/helper';
+import { MatSelectChange } from '@angular/material/select';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.scss']
+  styleUrls: ['./tasks.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 
 export class TasksComponent implements OnInit, AfterViewInit {
   aPriority = aPriority
@@ -33,20 +35,21 @@ export class TasksComponent implements OnInit, AfterViewInit {
   aCategory: string[] = []
   oFilterValues: ifFilter = {}
   bComplete: boolean = false;
+  sCategory = ''
   constructor(
-    private taskService: TaskService,
+    public taskService: TaskService,
     public userService: UserService,
     private dialogTask: MatDialog,
     private router: Router,
-    private _snackBar: MatSnackBar) {
-    // this.aData = new MatTableDataSource(taskService.fnGetTasks());
+    private _snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
+  ) {
     //Колонки
-    this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'creator'];
+    this.aDisplayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'complete', 'creator'];
     this.aData = new MatTableDataSource();
   }
 
   ngOnInit(): void {
-
     //авторизация. Переписать на гварды
     this.userService.fnCheckAuth().subscribe((sLogin) => {
       if (!sLogin) {
@@ -55,36 +58,39 @@ export class TasksComponent implements OnInit, AfterViewInit {
         return
       }
       this.userService.fnSetLogin(sLogin)
-      //запрашиваем задачи
       this.taskService.obTask.subscribe((aTasks) => {
+
         this.aData = new MatTableDataSource(aTasks);
         this.aData.filterPredicate = createFilter();
         //категории
         this.aCategory = this.taskService.aCategory.slice()
         //фильтры
-        this.oFilterValues['complete'] = this.bComplete
+        this.oFilterValues['complete'] = this.bComplete ? true : '';
         this.aData.filter = JSON.stringify(this.oFilterValues)
         //сортировка
         this.aData.sort = this.sort;
+        //
+        this.cdr.detectChanges()
       })
       //как это сделать лучше.?
       this.taskService.fnGetTasks()
-
     })
-  }
-  fnComplete() {
-    // this.bNotComplete
-    this.oFilterValues['complete'] = this.bComplete
-    this.aData.filter = JSON.stringify(this.oFilterValues)
-  }
-  // Фильтр
-  filterChange(value: string) {
-    this.oFilterValues['category'] = value;
-    this.aData.filter = JSON.stringify(this.oFilterValues)
   }
 
   ngAfterViewInit() {
     this.aData.sort = this.sort;
+  }
+  // Фильтры
+  fnFilterComplete(e: MatCheckboxChange) {
+
+    this.oFilterValues['complete'] = e.checked ? true : '';
+    this.aData.filter = JSON.stringify(this.oFilterValues);
+
+  }
+  fnFilterCategory(value: MatSelectChange) {
+    this.oFilterValues['category'] = value.value;
+    this.aData.filter = JSON.stringify(this.oFilterValues);
+
   }
   //Дилог добавление задачи
   fnOpenDialogCreateTask() {
@@ -92,7 +98,6 @@ export class TasksComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe((oTask: ifTask) => {
       if (oTask)
         this.taskService.fnCreateTask(oTask);
-
     });
   }
   //Диалог удаление задачи
