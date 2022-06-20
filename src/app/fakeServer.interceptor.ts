@@ -1,129 +1,123 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { ifTask, ifUser } from './shared/interfaces';
+import { ITask, IUser } from './shared/interfaces';
 import { i18n } from 'src/i18n';
-import { ThisReceiver } from '@angular/compiler';
 
 @Injectable()
 export class MainInterceptor implements HttpInterceptor {
     usersKey = 'users';
     loginKey = 'me';
-    sUsers: string = <string>localStorage.getItem(this.usersKey);
-    aUser: ifUser[] = this.sUsers ? JSON.parse(this.sUsers) : [];
-    sTaskKey = 'tasks/';
-    sLogin: string | null = null;
-    sKeyUserTask = '';
-    aTasks: ifTask[] = [];
+    stringUsers: string = <string>localStorage.getItem(this.usersKey);
+    users: IUser[] = this.stringUsers ? JSON.parse(this.stringUsers) : [];
+    taskKey = 'tasks/';
+    login: string | null = null;
+    keyUserTask = '';
+    tasks: ITask[] = [];
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         console.log(request.method + ' ' + request.url);
         // SIGIN USER
         if (request.method === "POST" && request.url === "signIn") {
-            return of(new HttpResponse({ status: 200, body: this.fnSignIn(request.body) }));
+            return of(new HttpResponse({ status: 200, body: this.signIn(request.body) }));
         }
         // SIGNOUT USER
         if (request.method === "DELETE" && request.url === "signIn") {
-            this.fnSignOut()
+            this.signOut()
             return of(new HttpResponse({ status: 200, body: true }));
         }
         // CHECK AUTH
         if (request.method === "GET" && request.url === "user") {
-            return of(new HttpResponse({ status: 200, body: this.fnCheckAuth() }));
+            return of(new HttpResponse({ status: 200, body: this.checkAuth() }));
         }
         // CREATE USER
         if (request.method === "POST" && request.url === "user") {
-            return of(new HttpResponse({ status: 200, body: this.fnCreateUser(request.body) }));
+            return of(new HttpResponse({ status: 200, body: this.createUser(request.body) }));
         }
         // GET TASK
         if (request.method === "GET" && request.url === "tasks") {
-            return of(new HttpResponse({ status: 200, body: this.fnGetTasks() }));
+            return of(new HttpResponse({ status: 200, body: this.getTasks() }));
         }
         // CREATE TASK
         if (request.method === "POST" && request.url === "tasks") {
-            this.fnCreateTask(request.body)
+            this.createTask(request.body)
             return of(new HttpResponse({ status: 200, body: true }));
         }
         // DELETE TASK
         if (request.method === "DELETE" && request.url === "tasks") {
 
-            this.fnDeleteTask(JSON.parse(request.params.get('id')!))
+            this.deleteTask(JSON.parse(request.params.get('id')!))
             return of(new HttpResponse({ status: 200, body: true }));
         }
         // EDIT TASK
         if (request.method === "PUT" && request.url === "tasks") {
-            this.fnEditTask( request.body)
+            this.editTask( request.body)
             return of(new HttpResponse({ status: 200, body: true }));
         }
-        
         return next.handle(request.clone());
     }
-    fnEditTask( oTask: ifTask) {
-        let aTasks = this.fnGetTasks();
-        let oOldTask = aTasks.find(e=>e.id == oTask.id)
+    editTask( task: ITask): void {
+        let tasks = this.getTasks();
+        let oOldTask = tasks.find(e=>e.id == task.id);
         if(!oOldTask){
-            return
+            return;
         }
-        aTasks.splice(aTasks.indexOf(oOldTask!), 1, oTask);
+        tasks.splice(tasks.indexOf(oOldTask!), 1, task);
         
-        localStorage.setItem(this.sKeyUserTask, JSON.stringify(this.aTasks));
+        localStorage.setItem(this.keyUserTask, JSON.stringify(this.tasks));
     }
-    fnDeleteTask(id: number) {
-        let aTasks = this.fnGetTasks();
-        let oTask = aTasks.find(e => e.id == id)
-        if (!oTask) {
-            return
+    deleteTask(id: number): void {
+        let tasks = this.getTasks();
+        let task = tasks.find(e => e.id == id);
+        if (!task) {
+            return;
         }
-        aTasks.splice(aTasks.indexOf(oTask!), 1);
-        // this.aTasks = this.aTasks.slice();
-        // this.obTask.next(this.aTasks);
-        localStorage.setItem(this.sKeyUserTask, JSON.stringify(aTasks));
+        tasks.splice(tasks.indexOf(task!), 1);
+        localStorage.setItem(this.keyUserTask, JSON.stringify(tasks));
     }
-    fnGetTasks() {
-        let sTasks = <string>localStorage.getItem(this.sKeyUserTask);
-        this.aTasks = sTasks ? JSON.parse(sTasks) : [];
-        return this.aTasks
+    getTasks():ITask[] {
+        let sTasks = <string>localStorage.getItem(this.keyUserTask);
+        this.tasks = sTasks ? JSON.parse(sTasks) : [];
+        return this.tasks;
     }
-    fnCreateTask(oTask: ifTask) {
-        let aTask = this.fnGetTasks()
-        oTask.creator = this.sLogin!
-        oTask.id = Date.now();
-        aTask.push(oTask);
-        localStorage.setItem(this.sKeyUserTask, JSON.stringify(aTask));
+    createTask(task: ITask):void {
+        let aTask = this.getTasks();
+        task.creator = this.login!;
+        task.id = Date.now();
+        aTask.push(task);
+        localStorage.setItem(this.keyUserTask, JSON.stringify(aTask));
     }
-    fnSignIn(oInputUser: ifUser): boolean {
-
+    signIn(oInputUser: IUser): boolean {
         let bExistUser: boolean;
         //проверяем существование localstore пользователей
-        bExistUser = this.aUser.some(e => e.login == oInputUser.login && e.password == oInputUser.password);
+        bExistUser = this.users.some(e => e.login == oInputUser.login && e.password == oInputUser.password);
         if (bExistUser) {
-            this.sLogin = oInputUser.login
-            this.sKeyUserTask = this.sTaskKey + this.sLogin
+            this.login = oInputUser.login;
+            this.keyUserTask = this.taskKey + this.login;
             localStorage.setItem(this.loginKey, oInputUser.login);
         } else {
-            this.sKeyUserTask = '';
-            this.sLogin = null
+            this.keyUserTask = '';
+            this.login = null;
         }
-        return bExistUser
+        return bExistUser;
     }
-    fnSignOut() {
-        this.sKeyUserTask = '';
-        this.sLogin = null;
+    signOut() {
+        this.keyUserTask = '';
+        this.login = null;
         //бесполезная строчка
         localStorage.removeItem(this.loginKey);
     }
-    fnCheckAuth(): string {
-
-        this.sLogin = <string>localStorage.getItem(this.loginKey);
-        this.sKeyUserTask = this.sTaskKey + this.sLogin
-        return this.sLogin
+    checkAuth(): string {
+        this.login = <string>localStorage.getItem(this.loginKey);
+        this.keyUserTask = this.taskKey + this.login;
+        return this.login;
     }
-    fnCreateUser(oNewUser: ifUser): string {
-        let bExistUser = this.aUser.some(e => e.login == oNewUser.login);
+    createUser(newUser: IUser): string {
+        let bExistUser = this.users.some(e => e.login == newUser.login);
 
         //добавляем пользователя
-        this.aUser.push({ login: oNewUser.login, password: oNewUser.password })
-        localStorage.setItem(this.usersKey, JSON.stringify(this.aUser));
-        return bExistUser ? i18n.USER_EXIST_UP_PASS : i18n.USER_REGISTERED(oNewUser.login)
+        this.users.push({ login: newUser.login, password: newUser.password });
+        localStorage.setItem(this.usersKey, JSON.stringify(this.users));
+        return bExistUser ? i18n.USER_EXIST_UP_PASS : i18n.USER_REGISTERED(newUser.login);
     }
 
 }

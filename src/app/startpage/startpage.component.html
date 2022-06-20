@@ -1,5 +1,5 @@
-<div *ngIf="bRegistration; else  Authorization">
-  <form [formGroup]="oFormAddUsr" class="form" (submit)="fnAddUsr()">
+<div *ngIf="isRegistration; else  Authorization">
+  <form [formGroup]="formUser" class="form" (submit)="addUser()">
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="login">Логин</mat-label>
       <input id="login" formControlName="login" type="text" matInput />
@@ -13,10 +13,10 @@
       <input id="passwordRepeat" formControlName="passwordRepeat" type="password" matInput />
     </mat-form-field>
 
-    <button mat-button type="submit" [disabled]="!oFormAddUsr.valid">
+    <button mat-button type="submit" [disabled]="!formUser.valid">
       Зарегистрироваться
     </button>
-    <button mat-button type="button" (click)="bRegistration = !bRegistration">
+    <button mat-button type="button" (click)="isRegistration = !isRegistration">
       отмена
     </button>
   </form>
@@ -24,7 +24,7 @@
 
 <ng-template #Authorization>
   
-  <form [formGroup]="oFormSignIn" class="form" (submit)=" fnSignIn()">
+  <form [formGroup]="formSignIn" class="form" (submit)=" signIn()">
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label for="login">Логин</mat-label>
       <input id="login" formControlName="login" type="text" matInput />
@@ -34,10 +34,10 @@
       <input id="passwordReg" formControlName="password" type="password" matInput />
     </mat-form-field>
 
-    <button mat-button [disabled]="!oFormSignIn.valid" type="submit">
+    <button mat-button [disabled]="!formSignIn.valid" type="submit">
       Войти
     </button>
-    <button mat-button type="button" (click)="bRegistration = !bRegistration">
+    <button mat-button type="button" (click)="isRegistration = !isRegistration">
       Регистрация
     </button>
   </form>

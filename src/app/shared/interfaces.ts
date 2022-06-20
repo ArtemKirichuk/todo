@@ -1,8 +1,8 @@
-export interface ifUser {
+export interface IUser {
     login:string
     password:string
 }
-export interface ifTask {
+export interface ITask {
     name:string
     dateStart:Date
     dateEnd: Date
@@ -12,6 +12,10 @@ export interface ifTask {
     complete:boolean
     id:number
 }
-export interface ifFilter{
+export interface IFilter{
     [key:string]:string|boolean
 }
+export interface ICategory {
+    key:string|null,
+    value:string
+  }

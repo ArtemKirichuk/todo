@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { ifTask } from './shared/interfaces';
+import { ITask } from './shared/interfaces';
 
 @Pipe({
   name: 'table',
@@ -8,9 +8,9 @@ import { ifTask } from './shared/interfaces';
 })
 export class TablePipe implements PipeTransform {
 
-  transform(aTasks:ifTask[]|null): MatTableDataSource<ifTask> {
-    console.log(aTasks)
-    let a =   new MatTableDataSource(aTasks?aTasks:[])
+  transform(tasks:ITask[]|null): MatTableDataSource<ITask> {
+    console.log(tasks)
+    let a =   new MatTableDataSource(tasks?tasks:[])
     return a;
   }
 

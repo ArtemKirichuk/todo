@@ -12,18 +12,18 @@ import { UserService } from '../user.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StartpageComponent implements OnInit {
-  oFormAddUsr = new FormGroup({
-    login: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-    passwordRepeat: new FormControl('', [Validators.required])
+  formUser = new FormGroup({
+    login: new FormControl(null, [Validators.required]),
+    password: new FormControl(null, [Validators.required]),
+    passwordRepeat: new FormControl(null, [Validators.required])
   })
-  oFormSignIn = new FormGroup({
-    login: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
+  formSignIn = new FormGroup({
+    login: new FormControl(null, [Validators.required]),
+    password: new FormControl(null, [Validators.required]),
 
   })
   usersKey = 'users';
-  bRegistration: boolean = false;
+  isRegistration: boolean = false;
   constructor(
     private _snackBar: MatSnackBar,
     private router: Router,
@@ -32,29 +32,29 @@ export class StartpageComponent implements OnInit {
 
   ngOnInit(): void { }
 
-  fnSignIn() {
-    let oInputUser = this.oFormSignIn.value;
+  signIn():void {
+    let oInputUser = this.formSignIn.value;
     //проверяем существование localstore пользователей
-    this.userService.fnSignIn(oInputUser).subscribe((bAuth: boolean) => {
+    this.userService.signIn(oInputUser).subscribe((bAuth: boolean) => {
       if (bAuth) {
-        this.userService.fnSetLogin(oInputUser.login)
+        this.userService.fnSetLogin(oInputUser.login);
         this.router.navigateByUrl('task');
       } else this._snackBar.open(i18n.USER_NOT_EXIST);
     })
   }
-  fnAddUsr() {
-    let oNewUser = this.oFormAddUsr.value;
+  addUser():void {
+    let newUser = this.formUser.value;
     //Проверка пароль и повторный пароль это скорее всего можно запихнуть в валидацию
-    if (oNewUser.password !== oNewUser.passwordRepeat) {
+    if (newUser.password !== newUser.passwordRepeat) {
       this._snackBar.open(i18n.USER_EXIST_UP_PASS);
       return
     }
-    this.userService.createUser(oNewUser).subscribe((e) => {
-      let sMsg = e
-      this._snackBar.open(sMsg)
+    this.userService.createUser(newUser).subscribe((e) => {
+      let msg = e;
+      this._snackBar.open(msg);
       //выходим с регистрации
-      this.bRegistration = !this.bRegistration;
-      this.oFormAddUsr.reset()
+      this.isRegistration = !this.isRegistration;
+      this.formUser.reset();
     })
   }
 }

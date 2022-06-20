@@ -1,32 +1,31 @@
 <mat-card class="head">
-    <button mat-button (click)="fnExit()">Выйти: {{userService.sLogin}}</button>
+    <button mat-button (click)="exit()">Выйти: {{userService.login}}</button>
 </mat-card>
 <mat-card>
     <mat-form-field appearance="fill" class="full-width">
         <mat-label>Категория</mat-label>
-        <mat-select (selectionChange)="fnFilterCategory($event)">
+        <mat-select (selectionChange)="filterCategory($event)">
             <mat-option></mat-option>
-            <mat-option *ngFor="let category of ( taskService.obCategory | async )" [value]="category">{{category}}</mat-option>
+            <mat-option *ngFor="let category of ( taskService.$categories | async )" [value]="category">{{category}}</mat-option>
         </mat-select>
     </mat-form-field>
     <!-- Завершить -->
-    <mat-checkbox (change)="fnFilterComplete($event)">Завершённые</mat-checkbox>
-    <!-- [(ngModel)]="bComplete" -->
+    <mat-checkbox (change)="filterComplete($event)">Завершённые</mat-checkbox>
 </mat-card>
 
 <div class="container">
-    <button mat-button type="button" (click)="fnOpenDialogCreateTask()">
+    <button mat-button type="button" (click)="openDialogCreateTask()">
         Создать задачу
     </button>
-    <button mat-button type="button" (click)="fnEditRow()">
+    <button mat-button type="button" (click)="editRow()">
         Редактировать задачу
     </button>
-    <button mat-button type="button" color="warn" (click)="fnOpenDialogDeleteTask()">
+    <button mat-button type="button" color="warn" (click)="openDialogDeleteTask()">
         Удалить задачу
     </button>
     
-    <table mat-table [dataSource]="aData" matSort class="mat-elevation-z8">
-    <!-- <table mat-table [dataSource]="(taskService.obTask | async)!" matSort class="mat-elevation-z8"> -->
+    <table mat-table [dataSource]="tasks" matSort class="mat-elevation-z8">
+    <!-- <table mat-table [dataSource]="(taskService.$tasks | async)!" matSort class="mat-elevation-z8"> -->
         <!-- Checkbox Column -->
         <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef>
@@ -56,7 +55,7 @@
         <ng-container matColumnDef="priority">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Приоритет</th>
             <td mat-cell [style]="{color:COLOR[element.priority],fontWeight:500}" *matCellDef="let element">{{
-                aPriority[element.priority].value }}</td>
+                priority[element.priority].value }}</td>
         </ng-container>
         <!-- category Column -->
         <ng-container matColumnDef="category">
@@ -81,20 +80,20 @@
         <!-- <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef>Удалить</th>
             <td mat-cell>
-                <button mat-button type="button" (click)="fnDeleteRow($event)">
+                <button mat-button type="button" (click)="deleteRow($event)">
                     У
                 </button>
             </td>
         </ng-container> -->
 
-        <tr mat-header-row *matHeaderRowDef="aDisplayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: aDisplayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 </div>
 <!-- <mat-checkbox (click)="$event.stopImmediatePropagation()"
                             (change)="$event ? selection.toggle(row) : null"
                             [checked]="selection.isSelected(row)"> 
             </mat-checkbox> -->
-<!-- <button mat-button type="button" (click)="fnDeleteRow($event)">
+<!-- <button mat-button type="button" (click)="deleteRow($event)">
                 Д
             </button> -->

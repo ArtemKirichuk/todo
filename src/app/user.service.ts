@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { i18n } from 'src/i18n';
-import { ifUser } from 'src/app/shared/interfaces';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { IUser } from 'src/app/shared/interfaces';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -11,26 +10,24 @@ export class UserService {
   
   usersKey = 'users';
   loginKey ='me';
-  sLogin = ''
-  // sLogin:string = <string>localStorage.getItem(this.loginKey);
-  obUsers = new BehaviorSubject<string>(this.sLogin)
+  login = '';
+  obUsers = new BehaviorSubject<string>(this.login);
   constructor(private http:HttpClient) { }
   
-  createUser(oNewUser: ifUser):Observable<string> {
-    return this.http.post<string>('user',oNewUser)
-    // 
+  createUser(newUser: IUser):Observable<string> {
+    return this.http.post<string>('user',newUser);
   }
-  fnSignIn(oInputUser: ifUser): Observable<boolean> {
-    return this.http.post<boolean>('signIn',oInputUser)
+  signIn(oInputUser: IUser): Observable<boolean> {
+    return this.http.post<boolean>('signIn',oInputUser);
   }
-  fnSignOut(){
-    this.http.delete('signIn')
-    this.sLogin = ''
+  signOut():void{
+    this.http.delete('signIn');
+    this.login = '';
   }
-  fnSetLogin(login:string){
-    this.sLogin = login;
+  fnSetLogin(login:string):void{
+    this.login = login;
   }
-  fnCheckAuth():Observable<string>{
-    return this.http.get<string>('user')
+  checkAuth():Observable<string>{
+    return this.http.get<string>('user');
   }
 }
