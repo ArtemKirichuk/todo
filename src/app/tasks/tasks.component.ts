@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, AfterContentInit, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, AfterContentInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ITask, IFilter } from 'src/app/shared/interfaces';
 import { TaskService } from '../task.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,7 +16,7 @@ import { priority, COLOR } from '../shared/data';
 import { createFilter } from '../shared/helper';
 import { MatSelectChange } from '@angular/material/select';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { Observable, Subject, switchMap } from 'rxjs';
+import { Observable, Subject, switchMap, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -26,7 +26,7 @@ import { Observable, Subject, switchMap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class TasksComponent implements OnInit, AfterViewInit {
+export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
   priority = priority;
   @ViewChild(MatSort) sort!: MatSort;
   tasks: MatTableDataSource<ITask>;
@@ -35,8 +35,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
   selection = new SelectionModel<ITask>(false, []);
   filterValues: IFilter = {};
   isComplete: boolean = false;
-  $update:Observable<void>;
-  
+  $update: Observable<void>;
+  $destroy = new Subject<void>();
   constructor(
     public taskService: TaskService,
     public userService: UserService,
@@ -48,94 +48,109 @@ export class TasksComponent implements OnInit, AfterViewInit {
     //Колонки
     this.displayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'complete', 'creator'];
     this.tasks = new MatTableDataSource();
-    this.$update = new Observable(observer=>{
-      this.taskService.getTasks().subscribe((tasks)=>{
-        this.tasks = new MatTableDataSource(tasks);
-        this.tasks.filterPredicate = createFilter();
-        // Куда это вытаскивать чтобы работало
-        //фильтры
-        this.filterValues['complete'] = this.isComplete ? true : '';
-        this.tasks.filter = JSON.stringify(this.filterValues);
-        //сортировка
-        this.tasks.sort = this.sort;
-        //
-        this.cdr.detectChanges();
-        observer.next()
-      })
-      
+    this.$update = new Observable(observer => {
+      this.taskService.getTasks()
+        .pipe(takeUntil(this.$destroy))
+        .subscribe((tasks) => {
+          this.tasks = new MatTableDataSource(tasks);
+          this.tasks.filterPredicate = createFilter();
+          // Куда это вытаскивать чтобы работало
+          //фильтры
+          this.filterValues['complete'] = this.isComplete ? true : '';
+          this.tasks.filter = JSON.stringify(this.filterValues);
+          //сортировка
+          this.tasks.sort = this.sort;
+          //
+          this.cdr.detectChanges();
+          observer.next()
+        })
     })
   }
 
   ngOnInit(): void {
     //авторизация. Переписать на гварды
-    this.userService.checkAuth().subscribe((login) => {
-      if (!login) {
-        this._snackBar.open(i18n.BAD_AUTH);
-        this.router.navigateByUrl('');
-        return
-      }
-      this.userService.fnSetLogin(login)
-      this.$update.subscribe()
-      // this.taskService.getTasks().subscribe((tasks) => {
-      //   this.tasks = new MatTableDataSource(tasks);
-      //   this.tasks.filterPredicate = createFilter();
-      //   // Куда это вытаскивать чтобы работало
-      //   //фильтры
-      //   this.filterValues['complete'] = this.isComplete ? true : '';
-      //   this.tasks.filter = JSON.stringify(this.filterValues);
-      //   //сортировка
-      //   this.tasks.sort = this.sort;
-      //   //
-      //   this.cdr.detectChanges();
-      // })
-    })
+    this.userService.checkAuth()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((login) => {
+        if (!login) {
+          this._snackBar.open(i18n.BAD_AUTH);
+          this.router.navigateByUrl('');
+          return
+        }
+        this.userService.fnSetLogin(login)
+        this.$update
+          .pipe(takeUntil(this.$destroy))
+          .subscribe()
+
+      })
   }
 
-  ngAfterViewInit():void {
+  ngAfterViewInit(): void {
     this.tasks.sort = this.sort;
   }
   // Фильтры
-  filterComplete(e: MatCheckboxChange):void {
+  filterComplete(e: MatCheckboxChange): void {
     this.filterValues['complete'] = e.checked ? true : '';
     this.tasks.filter = JSON.stringify(this.filterValues);
   }
-  filterCategory(value: MatSelectChange):void {
+  filterCategory(value: MatSelectChange): void {
     this.filterValues['category'] = value.value;
     this.tasks.filter = JSON.stringify(this.filterValues);
   }
   //Дилог добавление задачи
-  openDialogCreateTask():void {
+  openDialogCreateTask(): void {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
-    dialogRef.afterClosed().subscribe((task: ITask) => {
-      if (task)
-        this.taskService.createTask(task).pipe(switchMap(()=>this.$update)).subscribe();
-    });
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((task: ITask) => {
+        if (task)
+          this.taskService.createTask(task)
+            .pipe(
+              switchMap(() => this.$update),
+              takeUntil(this.$destroy)
+            )
+            .subscribe();
+      });
   }
   //редактирование задачи
-  editRow():void {
+  editRow(): void {
     if (!this.isSelect()) return
     const dialogRef = this.dialogTask.open(DialogTaskComponent, { data: this.selection.selected[0] });
-    dialogRef.afterClosed().subscribe((task: ITask) => {
-      if (task)
-        this.taskService.editTask(task).pipe(switchMap(()=>this.$update)).subscribe();
-    });
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe((task: ITask) => {
+        if (task)
+          this.taskService.editTask(task)
+            .pipe(
+              switchMap(() => this.$update),
+              takeUntil(this.$destroy)
+            )
+            .subscribe();
+      });
   }
   //Диалог удаление задачи
-  openDialogDeleteTask():void {
+  openDialogDeleteTask(): void {
     if (!this.isSelect()) return;
     const dialogRef = this.dialogTask.open(DilogDeleteTaskComponent);
-    dialogRef.afterClosed().subscribe(result => {
-      if (result)
-        this.deleteRow();
-    });
+    dialogRef.afterClosed()
+      .pipe(takeUntil(this.$destroy))
+      .subscribe(result => {
+        if (result)
+          this.deleteRow();
+      });
   }
   //Удаление задачи ,row: ITask
-  deleteRow():void {
+  deleteRow(): void {
     let task = this.selection.selected[0];
     this.selection.clear();
-    this.taskService.deleteTask(task).pipe(switchMap(()=>this.$update)).subscribe();
+    this.taskService.deleteTask(task)
+      .pipe(
+        switchMap(() => this.$update),
+        takeUntil(this.$destroy)
+      )
+      .subscribe();
   }
-  
+
   //Проверка
   isSelect(): boolean {
     let task = this.selection.selected[0];
@@ -146,8 +161,11 @@ export class TasksComponent implements OnInit, AfterViewInit {
     return isSelect;
   }
   //запрет выбор дней на календаре
-  exit():void {
+  exit(): void {
     this.userService.signOut();
     this.router.navigateByUrl('');
+  }
+  ngOnDestroy(): void {
+    this.$destroy.next()
   }
 }

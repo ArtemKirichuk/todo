@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n';
 import { UserService } from '../user.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-startpage',
@@ -24,6 +25,7 @@ export class StartpageComponent implements OnInit {
   })
   usersKey = 'users';
   isRegistration: boolean = false;
+  $destroy = new Subject<void>()
   constructor(
     private _snackBar: MatSnackBar,
     private router: Router,
@@ -35,7 +37,9 @@ export class StartpageComponent implements OnInit {
   signIn():void {
     let oInputUser = this.formSignIn.value;
     //проверяем существование localstore пользователей
-    this.userService.signIn(oInputUser).subscribe((bAuth: boolean) => {
+    this.userService.signIn(oInputUser)
+    .pipe(takeUntil(this.$destroy))
+    .subscribe((bAuth: boolean) => {
       if (bAuth) {
         this.userService.fnSetLogin(oInputUser.login);
         this.router.navigateByUrl('task');
@@ -49,12 +53,17 @@ export class StartpageComponent implements OnInit {
       this._snackBar.open(i18n.USER_EXIST_UP_PASS);
       return
     }
-    this.userService.createUser(newUser).subscribe((e) => {
+    this.userService.createUser(newUser)
+    .pipe(takeUntil(this.$destroy))
+    .subscribe((e) => {
       let msg = e;
       this._snackBar.open(msg);
       //выходим с регистрации
       this.isRegistration = !this.isRegistration;
       this.formUser.reset();
     })
+  }
+  ngOnDestroy(): void {
+    this.$destroy.next()
   }
 }
