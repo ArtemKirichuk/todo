@@ -36,3 +36,9 @@ th.mat-sort-header-sorted {
     font-family: "Segoe UI";
 
 }
+.example-table-container {
+    position: relative;
+    min-height: 200px;
+    max-height: 700px;
+    overflow: auto;
+  }

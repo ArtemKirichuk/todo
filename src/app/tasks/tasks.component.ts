@@ -16,7 +16,7 @@ import { priority, COLOR } from '../shared/data';
 import { createFilter } from '../shared/helper';
 import { MatSelectChange } from '@angular/material/select';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { Observable, of, ReplaySubject, Subject, switchMap, takeUntil } from 'rxjs';
 
 
 @Component({
@@ -35,8 +35,9 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
   selection = new SelectionModel<ITask>(false, []);
   filterValues: IFilter = {};
   isComplete: boolean = false;
-  $update: Observable<void>;
-  $destroy = new Subject<void>();
+  update$: Observable<ITask[]>;
+  destroy$ = new Subject<void>();
+  tasks$! : Observable<MatTableDataSource<ITask>>
   constructor(
     public taskService: TaskService,
     public userService: UserService,
@@ -48,10 +49,11 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     //Колонки
     this.displayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'complete', 'creator'];
     this.tasks = new MatTableDataSource();
-    this.$update = new Observable(observer => {
+    this.update$ = new Observable(observer => {
       this.taskService.getTasks()
-        .pipe(takeUntil(this.$destroy))
+        .pipe(takeUntil(this.destroy$))
         .subscribe((tasks) => {
+          
           this.tasks = new MatTableDataSource(tasks);
           this.tasks.filterPredicate = createFilter();
           // Куда это вытаскивать чтобы работало
@@ -62,7 +64,9 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
           this.tasks.sort = this.sort;
           //
           // this.cdr.detectChanges();
-          observer.next()
+          this.tasks$ = of(this.tasks);
+          // this.$testStrem.next(tasks)
+          // observer.next(tasks)
         })
     })
   }
@@ -70,7 +74,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
   ngOnInit(): void {
     //авторизация. Переписать на гварды
     this.userService.checkAuth()
-      .pipe(takeUntil(this.$destroy))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((login) => {
         if (!login) {
           this._snackBar.open(i18n.BAD_AUTH);
@@ -78,8 +82,8 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
           return
         }
         this.userService.fnSetLogin(login)
-        this.$update
-          .pipe(takeUntil(this.$destroy))
+        this.update$
+          .pipe(takeUntil(this.destroy$))
           .subscribe()
 
       })
@@ -101,13 +105,13 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
   openDialogCreateTask(): void {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
     dialogRef.afterClosed()
-      .pipe(takeUntil(this.$destroy))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((task: ITask) => {
         if (task)
           this.taskService.createTask(task)
             .pipe(
-              switchMap(() => this.$update),
-              takeUntil(this.$destroy)
+              switchMap(() => this.update$),
+              takeUntil(this.destroy$)
             )
             .subscribe();
       });
@@ -117,13 +121,13 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     if (!this.isSelect()) return
     const dialogRef = this.dialogTask.open(DialogTaskComponent, { data: this.selection.selected[0] });
     dialogRef.afterClosed()
-      .pipe(takeUntil(this.$destroy))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((task: ITask) => {
         if (task)
           this.taskService.editTask(task)
             .pipe(
-              switchMap(() => this.$update),
-              takeUntil(this.$destroy)
+              switchMap(() => this.update$),
+              takeUntil(this.destroy$)
             )
             .subscribe();
       });
@@ -133,7 +137,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     if (!this.isSelect()) return;
     const dialogRef = this.dialogTask.open(DilogDeleteTaskComponent);
     dialogRef.afterClosed()
-      .pipe(takeUntil(this.$destroy))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(result => {
         if (result)
           this.deleteRow();
@@ -145,8 +149,8 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     this.selection.clear();
     this.taskService.deleteTask(task)
       .pipe(
-        switchMap(() => this.$update),
-        takeUntil(this.$destroy)
+        switchMap(() => this.update$),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
@@ -166,6 +170,6 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     this.router.navigateByUrl('');
   }
   ngOnDestroy(): void {
-    this.$destroy.next()
+    this.destroy$.next()
   }
 }

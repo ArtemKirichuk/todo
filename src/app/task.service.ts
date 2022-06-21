@@ -12,8 +12,8 @@ export class TaskService implements OnInit {
   taskKey = 'tasks/';
   tasks: ITask[] = [];
   categories: string[] = [];
-  $categories: Subject<string[]> = new Subject<string[]>()
-  $tasks: Subject<ITask[]> = new Subject<ITask[]>()
+  categories$: Subject<string[]> = new Subject<string[]>()
+  tasks$: Subject<ITask[]> = new Subject<ITask[]>()
   constructor(
     private http: HttpClient
   ) { }
@@ -32,7 +32,7 @@ export class TaskService implements OnInit {
   getTasks(): Observable<ITask[]> {
     return this.http.get<ITask[]>('tasks').pipe(
       map((tasks: ITask[]) => {
-        this.$categories.next(this.createCategory(tasks))
+        this.categories$.next(this.createCategory(tasks))
         return tasks
       })
     )

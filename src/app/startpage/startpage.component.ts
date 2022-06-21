@@ -25,7 +25,7 @@ export class StartpageComponent implements OnInit {
   })
   usersKey = 'users';
   isRegistration: boolean = false;
-  $destroy = new Subject<void>()
+  destroy$ = new Subject<void>()
   constructor(
     private _snackBar: MatSnackBar,
     private router: Router,
@@ -38,7 +38,7 @@ export class StartpageComponent implements OnInit {
     let oInputUser = this.formSignIn.value;
     //проверяем существование localstore пользователей
     this.userService.signIn(oInputUser)
-    .pipe(takeUntil(this.$destroy))
+    .pipe(takeUntil(this.destroy$))
     .subscribe((bAuth: boolean) => {
       if (bAuth) {
         this.userService.fnSetLogin(oInputUser.login);
@@ -54,7 +54,7 @@ export class StartpageComponent implements OnInit {
       return
     }
     this.userService.createUser(newUser)
-    .pipe(takeUntil(this.$destroy))
+    .pipe(takeUntil(this.destroy$))
     .subscribe((e) => {
       let msg = e;
       this._snackBar.open(msg);
@@ -64,6 +64,6 @@ export class StartpageComponent implements OnInit {
     })
   }
   ngOnDestroy(): void {
-    this.$destroy.next()
+    this.destroy$.next()
   }
 }
