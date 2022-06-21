@@ -16,6 +16,7 @@ import { priority, COLOR } from '../shared/data';
 import { createFilter } from '../shared/helper';
 import { MatSelectChange } from '@angular/material/select';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { Observable, Subject, switchMap } from 'rxjs';
 
 
 @Component({
@@ -34,6 +35,8 @@ export class TasksComponent implements OnInit, AfterViewInit {
   selection = new SelectionModel<ITask>(false, []);
   filterValues: IFilter = {};
   isComplete: boolean = false;
+  $update:Observable<void>;
+  
   constructor(
     public taskService: TaskService,
     public userService: UserService,
@@ -45,6 +48,22 @@ export class TasksComponent implements OnInit, AfterViewInit {
     //Колонки
     this.displayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'complete', 'creator'];
     this.tasks = new MatTableDataSource();
+    this.$update = new Observable(observer=>{
+      this.taskService.getTasks().subscribe((tasks)=>{
+        this.tasks = new MatTableDataSource(tasks);
+        this.tasks.filterPredicate = createFilter();
+        // Куда это вытаскивать чтобы работало
+        //фильтры
+        this.filterValues['complete'] = this.isComplete ? true : '';
+        this.tasks.filter = JSON.stringify(this.filterValues);
+        //сортировка
+        this.tasks.sort = this.sort;
+        //
+        this.cdr.detectChanges();
+        observer.next()
+      })
+      
+    })
   }
 
   ngOnInit(): void {
@@ -56,20 +75,19 @@ export class TasksComponent implements OnInit, AfterViewInit {
         return
       }
       this.userService.fnSetLogin(login)
-      this.taskService.$tasks.subscribe((tasks) => {
-        this.tasks = new MatTableDataSource(tasks);
-        this.tasks.filterPredicate = createFilter();
-        // Куда это вытаскивать чтобы работало
-        //фильтры
-        this.filterValues['complete'] = this.isComplete ? true : '';
-        this.tasks.filter = JSON.stringify(this.filterValues);
-        //сортировка
-        this.tasks.sort = this.sort;
-        //
-        this.cdr.detectChanges();
-      })
-      //как это сделать лучше.?
-      this.taskService.getTasks();
+      this.$update.subscribe()
+      // this.taskService.getTasks().subscribe((tasks) => {
+      //   this.tasks = new MatTableDataSource(tasks);
+      //   this.tasks.filterPredicate = createFilter();
+      //   // Куда это вытаскивать чтобы работало
+      //   //фильтры
+      //   this.filterValues['complete'] = this.isComplete ? true : '';
+      //   this.tasks.filter = JSON.stringify(this.filterValues);
+      //   //сортировка
+      //   this.tasks.sort = this.sort;
+      //   //
+      //   this.cdr.detectChanges();
+      // })
     })
   }
 
@@ -90,7 +108,16 @@ export class TasksComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialogTask.open(DialogTaskComponent);
     dialogRef.afterClosed().subscribe((task: ITask) => {
       if (task)
-        this.taskService.createTask(task);
+        this.taskService.createTask(task).pipe(switchMap(()=>this.$update)).subscribe();
+    });
+  }
+  //редактирование задачи
+  editRow():void {
+    if (!this.isSelect()) return
+    const dialogRef = this.dialogTask.open(DialogTaskComponent, { data: this.selection.selected[0] });
+    dialogRef.afterClosed().subscribe((task: ITask) => {
+      if (task)
+        this.taskService.editTask(task).pipe(switchMap(()=>this.$update)).subscribe();
     });
   }
   //Диалог удаление задачи
@@ -106,13 +133,9 @@ export class TasksComponent implements OnInit, AfterViewInit {
   deleteRow():void {
     let task = this.selection.selected[0];
     this.selection.clear();
-    this.taskService.deleteTask(task);
+    this.taskService.deleteTask(task).pipe(switchMap(()=>this.$update)).subscribe();
   }
-  //редактирование задачи
-  editRow():void {
-    if (!this.isSelect()) return
-    const dialogRef = this.dialogTask.open(DialogTaskComponent, { data: this.selection.selected[0] });
-  }
+  
   //Проверка
   isSelect(): boolean {
     let task = this.selection.selected[0];

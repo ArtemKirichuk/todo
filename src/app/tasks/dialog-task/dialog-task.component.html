@@ -60,6 +60,6 @@
     <button mat-button mat-dialog-close>Отмена</button>
     <button mat-button *ngIf="isCreate" [disabled]="!formTask.valid"
         [mat-dialog-close]="formTask.value">Создать</button>
-    <button mat-button *ngIf="!isCreate" [disabled]="!formTask.valid" mat-dialog-close
+    <button mat-button *ngIf="!isCreate" [disabled]="!formTask.valid" [mat-dialog-close]="task"
         (click)="saveRow()">Сохранить</button>
 </mat-dialog-actions>

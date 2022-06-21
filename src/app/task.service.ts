@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { ITask } from 'src/app/shared/interfaces';
 
 @Injectable({
@@ -8,49 +8,38 @@ import { ITask } from 'src/app/shared/interfaces';
 })
 
 export class TaskService implements OnInit {
-  
+
   taskKey = 'tasks/';
   tasks: ITask[] = [];
   categories: string[] = [];
-  $tasks: Subject<ITask[]> = new Subject<ITask[]>()
   $categories: Subject<string[]> = new Subject<string[]>()
-  noCategory = 'БЕЗ КАТЕГОРИИ';
+  $tasks: Subject<ITask[]> = new Subject<ITask[]>()
   constructor(
     private http: HttpClient
   ) { }
   ngOnInit(): void { }
 
-  createTask(task: ITask):void {
-    this.http.post('tasks', task).subscribe((e) => {
-      this.getTasks()
-    })
+  createTask(task: ITask): Observable<boolean> {
+    return this.http.post<boolean>('tasks', task)
   }
-  deleteTask(task: ITask):void {
-    this.http.delete('tasks', { params: { 'id': task.id } })
-      .subscribe((res) => {
-        this.getTasks()
-      })
+  deleteTask(task: ITask): Observable<boolean> {
+    return this.http.delete<boolean>('tasks', { params: { 'id': task.id } })
   }
-  editTask(oEditTask: ITask):void {
+  editTask(oEditTask: ITask): Observable<boolean> {
 
-    this.http.put('tasks', oEditTask)
-      .subscribe((res) => {
-        this.getTasks()
-      })
+    return this.http.put<boolean>('tasks', oEditTask)
   }
-  getTasks():void {
-    this.http.get<ITask[]>('tasks')
-      .subscribe((tasks: ITask[]) => {
-        //Собираем категории
-        this.$tasks.next(tasks)
+  getTasks(): Observable<ITask[]> {
+    return this.http.get<ITask[]>('tasks').pipe(
+      map((tasks: ITask[]) => {
         this.$categories.next(this.createCategory(tasks))
-      });
+        return tasks
+      })
+    )
   }
   createCategory(tasks: ITask[]): string[] {
     this.categories = tasks.reduce((acc, v) => {
-      
       !acc.includes(v.category) && v.category !== null && acc.push(v.category)
-        
       return acc
     }, [] as string[])
     return this.categories

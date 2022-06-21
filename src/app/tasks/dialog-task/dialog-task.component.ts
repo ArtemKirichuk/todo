@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ITask } from 'src/app/shared/interfaces';
 import { TaskService } from 'src/app/task.service';
 import { CustomValidator } from 'src/app/shared/fn.validator';
@@ -40,7 +40,8 @@ export class DialogTaskComponent implements OnInit {
 
   constructor(
     public taskService: TaskService,
-    @Inject(MAT_DIALOG_DATA) public task: ITask
+    @Inject(MAT_DIALOG_DATA) public task: ITask,
+    // private dialogRef : MatDialogRef
   ) {
     this.isCreate = task ? false : true;
     this.categories = taskService.categories;
@@ -65,7 +66,7 @@ export class DialogTaskComponent implements OnInit {
   //Сохранить изменения
   saveRow(): void {
     Object.assign(this.task, this.formTask.value);
-    this.taskService.editTask(this.task);
+    // this.taskService.editTask(this.task);
   }
   compareCompleteDate = (d: Date | null): boolean => {
     const day = (d || new Date());
