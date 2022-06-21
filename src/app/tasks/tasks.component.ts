@@ -61,7 +61,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
           //сортировка
           this.tasks.sort = this.sort;
           //
-          this.cdr.detectChanges();
+          // this.cdr.detectChanges();
           observer.next()
         })
     })
