@@ -1,23 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, map, Observable, ReplaySubject, Subject } from 'rxjs';
 import { ITask } from 'src/app/shared/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class TaskService implements OnInit {
+export class TaskService  {
 
   taskKey = 'tasks/';
   tasks: ITask[] = [];
   categories: string[] = [];
-  categories$: Subject<string[]> = new Subject<string[]>()
+  categories$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([])
   tasks$: Subject<ITask[]> = new Subject<ITask[]>()
   constructor(
     private http: HttpClient
   ) { }
-  ngOnInit(): void { }
 
   createTask(task: ITask): Observable<boolean> {
     return this.http.post<boolean>('tasks', task)
