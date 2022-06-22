@@ -13,5 +13,4 @@ export class TablePipe implements PipeTransform {
     let a =   new MatTableDataSource(tasks?tasks:[])
     return a;
   }
-
 }

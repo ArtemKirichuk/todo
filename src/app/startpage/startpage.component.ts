@@ -12,7 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrls: ['./startpage.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StartpageComponent implements OnInit {
+export class StartpageComponent {
   formUser = new FormGroup({
     login: new FormControl(null, [Validators.required]),
     password: new FormControl(null, [Validators.required]),
@@ -32,10 +32,8 @@ export class StartpageComponent implements OnInit {
     private userService: UserService
   ) {  }
 
-  ngOnInit(): void { }
-
   signIn():void {
-    let oInputUser = this.formSignIn.value;
+    const oInputUser = this.formSignIn.value;
     //проверяем существование localstore пользователей
     this.userService.signIn(oInputUser)
     .pipe(takeUntil(this.destroy$))
@@ -47,7 +45,7 @@ export class StartpageComponent implements OnInit {
     })
   }
   addUser():void {
-    let newUser = this.formUser.value;
+    const newUser = this.formUser.value;
     //Проверка пароль и повторный пароль это скорее всего можно запихнуть в валидацию
     if (newUser.password !== newUser.passwordRepeat) {
       this._snackBar.open(i18n.USER_EXIST_UP_PASS);
@@ -56,7 +54,7 @@ export class StartpageComponent implements OnInit {
     this.userService.createUser(newUser)
     .pipe(takeUntil(this.destroy$))
     .subscribe((e) => {
-      let msg = e;
+      const msg = e;
       this._snackBar.open(msg);
       //выходим с регистрации
       this.isRegistration = !this.isRegistration;

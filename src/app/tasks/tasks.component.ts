@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, AfterContentInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ITask, IFilter } from 'src/app/shared/interfaces';
 import { TaskService } from '../task.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,8 +16,7 @@ import { priority, COLOR } from '../shared/data';
 import { createFilter } from '../shared/helper';
 import { MatSelectChange } from '@angular/material/select';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { Observable, of, ReplaySubject, Subject, switchMap, takeUntil } from 'rxjs';
-
+import { Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -62,7 +61,6 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
           this.tasks.filter = JSON.stringify(this.filterValues);
           //сортировка
           this.tasks.sort = this.sort;
-          //
           // this.cdr.detectChanges();
           this.tasks$ = of(this.tasks);
           // this.$testStrem.next(tasks)
@@ -85,7 +83,6 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
         this.update$
           .pipe(takeUntil(this.destroy$))
           .subscribe()
-
       })
   }
 
