@@ -3,8 +3,9 @@
 </mat-card>
 <mat-card>
     <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Категория</mat-label>
-        <mat-select (selectionChange)="filterCategory($event)">
+        <!-- <mat-label>Категория</mat-label> -->
+        <!-- <input [style]="{ 'display' : 'none' }" matInput placeholder="Input"> -->
+        <mat-select  (selectionChange)="filterCategory($event)">
             <mat-option></mat-option>
             <mat-option *ngFor="let category of ( taskService.categories$ | async )" [value]="category">{{category}}
             </mat-option>

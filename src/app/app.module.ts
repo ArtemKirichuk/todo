@@ -26,7 +26,7 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'ru' },
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
+    
     { provide: HTTP_INTERCEPTORS, useClass: MainInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

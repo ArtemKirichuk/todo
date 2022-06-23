@@ -14,7 +14,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { TasksComponent } from './tasks.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -48,6 +48,7 @@ import { TablePipe } from '..//pipes.pipe';
     MatCardModule,
     MatSelectModule,
     MatAutocompleteModule
-  ]
+  ],
+  providers:[{ provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },]
 })
 export class TasksModule { }

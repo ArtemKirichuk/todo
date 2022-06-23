@@ -42,7 +42,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     public userService: UserService,
     private dialogTask: MatDialog,
     private router: Router,
-    private _snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
   ) {
     //Колонки
@@ -75,7 +75,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((login) => {
         if (!login) {
-          this._snackBar.open(i18n.BAD_AUTH);
+          this.snackBar.open(i18n.BAD_AUTH);
           this.router.navigateByUrl('');
           return
         }
@@ -157,7 +157,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     let task = this.selection.selected[0];
     let isSelect = task ? true : false;
     if (!isSelect) {
-      this._snackBar.open(i18n.SELECT_ROW);
+      this.snackBar.open(i18n.SELECT_ROW);
     }
     return isSelect;
   }

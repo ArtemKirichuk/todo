@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {Component,  ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -27,7 +27,7 @@ export class StartpageComponent {
   isRegistration: boolean = false;
   destroy$ = new Subject<void>()
   constructor(
-    private _snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private router: Router,
     private userService: UserService
   ) {  }
@@ -41,21 +41,21 @@ export class StartpageComponent {
       if (bAuth) {
         this.userService.fnSetLogin(oInputUser.login);
         this.router.navigateByUrl('task');
-      } else this._snackBar.open(i18n.USER_NOT_EXIST);
+      } else this.snackBar.open(i18n.USER_NOT_EXIST);
     })
   }
   addUser():void {
     const newUser = this.formUser.value;
     //Проверка пароль и повторный пароль это скорее всего можно запихнуть в валидацию
     if (newUser.password !== newUser.passwordRepeat) {
-      this._snackBar.open(i18n.USER_EXIST_UP_PASS);
+      this.snackBar.open(i18n.USER_EXIST_UP_PASS);
       return
     }
     this.userService.createUser(newUser)
     .pipe(takeUntil(this.destroy$))
     .subscribe((e) => {
       const msg = e;
-      this._snackBar.open(msg);
+      this.snackBar.open(msg);
       //выходим с регистрации
       this.isRegistration = !this.isRegistration;
       this.formUser.reset();
