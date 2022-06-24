@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { ITask, IUser } from './shared/interfaces';
+import { HttpInterceptor, HttpEvent, HttpHandler, HttpRequest, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { catchError, Observable, of } from 'rxjs';
+import { IRegUser, ITask, IUser } from './shared/interfaces';
 import { i18n } from 'src/i18n';
 
 @Injectable()
@@ -31,7 +31,9 @@ export class MainInterceptor implements HttpInterceptor {
         }
         // CREATE USER
         if (request.method === "POST" && request.url === "user") {
-            return of(new HttpResponse({ status: 200, body: this.createUser(request.body) }));
+            
+            
+                return of(new HttpResponse({ status: 200, body: this.createUser(request.body) }));
         }
         // GET TASK
         if (request.method === "GET" && request.url === "tasks") {
@@ -50,19 +52,19 @@ export class MainInterceptor implements HttpInterceptor {
         }
         // EDIT TASK
         if (request.method === "PUT" && request.url === "tasks") {
-            this.editTask( request.body)
+            this.editTask(request.body)
             return of(new HttpResponse({ status: 200, body: true }));
         }
         return next.handle(request.clone());
     }
-    editTask( task: ITask): void {
+    editTask(task: ITask): void {
         let tasks = this.getTasks();
-        let oOldTask = tasks.find(e=>e.id == task.id);
-        if(!oOldTask){
+        let oOldTask = tasks.find(e => e.id == task.id);
+        if (!oOldTask) {
             return;
         }
         tasks.splice(tasks.indexOf(oOldTask!), 1, task);
-        
+
         localStorage.setItem(this.keyUserTask, JSON.stringify(this.tasks));
     }
     deleteTask(id: number): void {
@@ -74,12 +76,12 @@ export class MainInterceptor implements HttpInterceptor {
         tasks.splice(tasks.indexOf(task!), 1);
         localStorage.setItem(this.keyUserTask, JSON.stringify(tasks));
     }
-    getTasks():ITask[] {
+    getTasks(): ITask[] {
         let sTasks = <string>localStorage.getItem(this.keyUserTask);
         this.tasks = sTasks ? JSON.parse(sTasks) : [];
         return this.tasks;
     }
-    createTask(task: ITask):void {
+    createTask(task: ITask): void {
         let aTask = this.getTasks();
         task.creator = this.login!;
         task.id = Date.now();
@@ -111,13 +113,14 @@ export class MainInterceptor implements HttpInterceptor {
         this.keyUserTask = this.taskKey + this.login;
         return this.login;
     }
-    createUser(newUser: IUser): string {
+    createUser(newUser: IRegUser): string {
         let bExistUser = this.users.some(e => e.login == newUser.login);
 
         //добавляем пользователя
         this.users.push({ login: newUser.login, password: newUser.password });
         localStorage.setItem(this.usersKey, JSON.stringify(this.users));
         return bExistUser ? i18n.USER_EXIST_UP_PASS : i18n.USER_REGISTERED(newUser.login);
+
     }
 
 }

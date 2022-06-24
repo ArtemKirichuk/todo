@@ -2,6 +2,9 @@ export interface IUser {
     login:string;
     password:string;
 }
+export interface IRegUser extends  IUser{
+    passwordRepeat:string;
+}
 export interface ITask {
     name:string;
     dateStart:Date;

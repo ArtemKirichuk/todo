@@ -12,7 +12,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserService } from '../user.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { TasksComponent } from '../tasks/tasks.component';
 import { By } from '@angular/platform-browser';
 import { i18n } from 'src/i18n';
@@ -114,6 +114,29 @@ describe('StartpageComponent', () => {
     expect(inputLogin.nativeElement.value).toEqual('');
     expect(inputRegPassword.nativeElement.value).toEqual('');
     expect(inputRegPasswordRepeat.nativeElement.value).toEqual('');
+    done();
+  });
+  it('addUser: ф-я регистрации возвращает ошибку при отличающихся паролях', done => {
+    //заполнение формы в компоненте
+    component.formUser.setValue({ login: 'akirichuk', password: 'testPass', passwordRepeat: 'anotherPass' })
+    //переход на форму регистрации
+    const btnRegistration = fixture.debugElement.query(By.css('#toRegistrationUser'));
+    btnRegistration.nativeElement.click()
+    fixture.detectChanges()
+
+    fakeUserService.createUser.and.returnValue(throwError(i18n.DEFF_PASS));
+    component.addUser()
+
+    
+    //вытаскиваем поля формы регистрации пользователя
+    const inputLogin = fixture.debugElement.query(By.css('#login'));
+    const inputRegPassword = fixture.debugElement.query(By.css('#password'));
+    const inputRegPasswordRepeat = fixture.debugElement.query(By.css('#passwordRepeat'));
+    //ожидаемый результат
+    expect(component.isRegistration).toBe(true);
+    expect(inputLogin.nativeElement.value).toEqual('akirichuk');
+    expect(inputRegPassword.nativeElement.value).toEqual('testPass');
+    expect(inputRegPasswordRepeat.nativeElement.value).toEqual('anotherPass');
     done();
   });
 });
