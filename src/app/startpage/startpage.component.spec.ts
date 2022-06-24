@@ -1,5 +1,5 @@
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, flushMicrotasks, TestBed } from '@angular/core/testing';
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 import { StartpageComponent } from './startpage.component';
@@ -63,14 +63,32 @@ describe('StartpageComponent', () => {
 
   });
   it('signIn: проверка может ли пользователь войти в систему', done => {
-    fakeUserService.signIn.and.returnValue(of(true))
+    fakeUserService.signIn.and.returnValue(of(true));
     component.signIn()
     expect(component.auth).toBe(true);
-    done()
+    done();
   });
   it('Переход на форму регистрации', () => {
     const btnRegistration = fixture.debugElement.query(By.css('#toRegistrationUser'));
     btnRegistration.nativeElement.click()
     expect(component.isRegistration ).toBeTrue();
+    
+  });
+  it('Заполнение формы регистрации', () => {
+    //заполнение формы в компоненте
+    component.formUser.setValue({login:'akirichuk', password:'testPass', passwordRepeat:'testPass'})
+    //переход на форму регистрации
+    const btnRegistration = fixture.debugElement.query(By.css('#toRegistrationUser'));
+    btnRegistration.nativeElement.click()
+    fixture.detectChanges()
+    //вытаскиваем поля формы с шаблона
+    const inputLogin = fixture.debugElement.query(By.css('#login'));
+    const inputRegPassword = fixture.debugElement.query(By.css('#password'));
+    const inputRegPasswordRepeat = fixture.debugElement.query(By.css('#passwordRepeat'));
+    //ожидания
+    expect(inputLogin.nativeElement.value ).toBe('akirichuk');
+    expect(inputRegPassword.nativeElement.value ).toBe('testPass');
+    expect(inputRegPasswordRepeat.nativeElement.value ).toBe('testPass');
+
   });
 });
