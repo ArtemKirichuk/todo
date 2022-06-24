@@ -47,7 +47,6 @@ export class StartpageComponent {
   }
   addUser():void {
     const newUser = this.formUser.value;
-    //Проверка пароль и повторный пароль это скорее всего можно запихнуть в валидацию
     if (newUser.password !== newUser.passwordRepeat) {
       this.snackBar.open(i18n.USER_EXIST_UP_PASS);
       return

@@ -15,29 +15,30 @@ import { UserService } from '../user.service';
 import { of } from 'rxjs';
 import { TasksComponent } from '../tasks/tasks.component';
 import { By } from '@angular/platform-browser';
+import { i18n } from 'src/i18n';
 describe('StartpageComponent', () => {
   let component: StartpageComponent;
   let fixture: ComponentFixture<StartpageComponent>;
   RouterTestingModule
-  const fakeUserService = jasmine.createSpyObj("fakeUserService", ["signIn","fnSetLogin"]);
+  const fakeUserService = jasmine.createSpyObj("fakeUserService", ["signIn", "fnSetLogin", "createUser"]);
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [StartpageComponent],
       providers: [
         { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
-        { provide: UserService , useValue: fakeUserService }
+        { provide: UserService, useValue: fakeUserService }
       ],
-      schemas:[ CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         MatSnackBarModule,
         RouterTestingModule.withRoutes([
           { path: 'task', component: TasksComponent }
-      ]),
+        ]),
         HttpClientTestingModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        NoopAnimationsModule, 
+        NoopAnimationsModule,
         FormsModule,
         ReactiveFormsModule
       ]
@@ -55,11 +56,11 @@ describe('StartpageComponent', () => {
     expect(component).toBeTruthy();
   });
   it('Заполнение формы аутентификации', () => {
-    component.formSignIn.setValue({login:'akirichuk', password:'testPass'})
+    component.formSignIn.setValue({ login: 'akirichuk', password: 'testPass' })
     const inputLogin = fixture.debugElement.query(By.css('#login'));
     const inputRegPassword = fixture.debugElement.query(By.css('#passwordReg'));
-    expect(inputLogin.nativeElement.value ).toBe('akirichuk');
-    expect(inputRegPassword.nativeElement.value ).toBe('testPass');
+    expect(inputLogin.nativeElement.value).toBe('akirichuk');
+    expect(inputRegPassword.nativeElement.value).toBe('testPass');
 
   });
   it('signIn: проверка может ли пользователь войти в систему', done => {
@@ -71,12 +72,12 @@ describe('StartpageComponent', () => {
   it('Переход на форму регистрации', () => {
     const btnRegistration = fixture.debugElement.query(By.css('#toRegistrationUser'));
     btnRegistration.nativeElement.click()
-    expect(component.isRegistration ).toBeTrue();
-    
+    expect(component.isRegistration).toBeTrue();
+
   });
   it('Заполнение формы регистрации', () => {
     //заполнение формы в компоненте
-    component.formUser.setValue({login:'akirichuk', password:'testPass', passwordRepeat:'testPass'})
+    component.formUser.setValue({ login: 'akirichuk', password: 'testPass', passwordRepeat: 'testPass' })
     //переход на форму регистрации
     const btnRegistration = fixture.debugElement.query(By.css('#toRegistrationUser'));
     btnRegistration.nativeElement.click()
@@ -86,9 +87,33 @@ describe('StartpageComponent', () => {
     const inputRegPassword = fixture.debugElement.query(By.css('#password'));
     const inputRegPasswordRepeat = fixture.debugElement.query(By.css('#passwordRepeat'));
     //ожидания
-    expect(inputLogin.nativeElement.value ).toBe('akirichuk');
-    expect(inputRegPassword.nativeElement.value ).toBe('testPass');
-    expect(inputRegPasswordRepeat.nativeElement.value ).toBe('testPass');
+    expect(inputLogin.nativeElement.value).toBe('akirichuk');
+    expect(inputRegPassword.nativeElement.value).toBe('testPass');
+    expect(inputRegPasswordRepeat.nativeElement.value).toBe('testPass');
 
+  });
+  it('addUser: ф-я регистрации пользователя', done => {
+    //заполнение формы в компоненте
+    component.formUser.setValue({ login: 'akirichuk', password: 'testPass', passwordRepeat: 'testPass' })
+    //переход на форму регистрации
+    const btnRegistration = fixture.debugElement.query(By.css('#toRegistrationUser'));
+    btnRegistration.nativeElement.click()
+    fixture.detectChanges()
+
+    const inputLogin = fixture.debugElement.query(By.css('#login'));
+    const login = inputLogin.nativeElement.value
+    fakeUserService.createUser.and.returnValue(of(`Пользователь ${login} зарегистрирован.`));
+    component.addUser()
+
+    expect(component.isRegistration).toBe(false);
+    
+    //вытаскиваем поля формы регистрации пользователя
+    const inputRegPassword = fixture.debugElement.query(By.css('#password'));
+    const inputRegPasswordRepeat = fixture.debugElement.query(By.css('#passwordRepeat'));
+    //ожидаемый результат
+    expect(inputLogin.nativeElement.value).toEqual('');
+    expect(inputRegPassword.nativeElement.value).toEqual('');
+    expect(inputRegPasswordRepeat.nativeElement.value).toEqual('');
+    done();
   });
 });
