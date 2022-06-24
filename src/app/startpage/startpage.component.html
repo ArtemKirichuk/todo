@@ -16,7 +16,7 @@
     <button mat-button type="submit" [disabled]="!formUser.valid">
       Зарегистрироваться
     </button>
-    <button mat-button type="button" (click)="isRegistration = !isRegistration">
+    <button  mat-button type="button" (click)="toggleRegistration()">
       отмена
     </button>
   </form>
@@ -37,7 +37,7 @@
     <button mat-button [disabled]="!formSignIn.valid" type="submit">
       Войти
     </button>
-    <button mat-button type="button" (click)="isRegistration = !isRegistration">
+    <button mat-button id="toRegistrationUser" type="button" (click)="toggleRegistration()">
       Регистрация
     </button>
   </form>

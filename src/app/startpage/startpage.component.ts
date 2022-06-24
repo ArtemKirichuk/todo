@@ -23,6 +23,7 @@ export class StartpageComponent {
     password: new FormControl(null, [Validators.required]),
 
   })
+  auth:boolean = false;
   usersKey = 'users';
   isRegistration: boolean = false;
   destroy$ = new Subject<void>()
@@ -33,14 +34,14 @@ export class StartpageComponent {
   ) {  }
 
   signIn():void {
-    const oInputUser = this.formSignIn.value;
-    //проверяем существование localstore пользователей
-    this.userService.signIn(oInputUser)
+    const inputUser = this.formSignIn.value;
+    this.userService.signIn(inputUser)
     .pipe(takeUntil(this.destroy$))
-    .subscribe((bAuth: boolean) => {
-      if (bAuth) {
-        this.userService.fnSetLogin(oInputUser.login);
+    .subscribe((auth: boolean) => {
+      if (auth) {
+        this.userService.fnSetLogin(inputUser.login);
         this.router.navigateByUrl('task');
+        this.auth = auth
       } else this.snackBar.open(i18n.USER_NOT_EXIST);
     })
   }
@@ -61,6 +62,10 @@ export class StartpageComponent {
       this.formUser.reset();
     })
   }
+  toggleRegistration(){
+    this.isRegistration = !this.isRegistration
+  }
+  
   ngOnDestroy(): void {
     this.destroy$.next()
   }

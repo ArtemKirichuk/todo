@@ -86,14 +86,14 @@ export class MainInterceptor implements HttpInterceptor {
         aTask.push(task);
         localStorage.setItem(this.keyUserTask, JSON.stringify(aTask));
     }
-    signIn(oInputUser: IUser): boolean {
+    signIn(inputUser: IUser): boolean {
         let bExistUser: boolean;
         //проверяем существование localstore пользователей
-        bExistUser = this.users.some(e => e.login == oInputUser.login && e.password == oInputUser.password);
+        bExistUser = this.users.some(e => e.login == inputUser.login && e.password == inputUser.password);
         if (bExistUser) {
-            this.login = oInputUser.login;
+            this.login = inputUser.login;
             this.keyUserTask = this.taskKey + this.login;
-            localStorage.setItem(this.loginKey, oInputUser.login);
+            localStorage.setItem(this.loginKey, inputUser.login);
         } else {
             this.keyUserTask = '';
             this.login = null;

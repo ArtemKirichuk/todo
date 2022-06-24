@@ -20,7 +20,7 @@ describe('TasksComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ TasksComponent ],
-      schemas:[ CUSTOM_ELEMENTS_SCHEMA],
+      schemas:[ CUSTOM_ELEMENTS_SCHEMA ],
       imports:[
         HttpClientTestingModule,
         MatDialogModule,

@@ -17,8 +17,8 @@ export class UserService {
   createUser(newUser: IUser):Observable<string> {
     return this.http.post<string>('user',newUser);
   }
-  signIn(oInputUser: IUser): Observable<boolean> {
-    return this.http.post<boolean>('signIn',oInputUser);
+  signIn(inputUser: IUser): Observable<boolean> {
+    return this.http.post<boolean>('signIn',inputUser);
   }
   signOut():void{
     this.http.delete('signIn');
