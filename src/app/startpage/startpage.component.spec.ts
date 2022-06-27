@@ -16,10 +16,11 @@ import { of, throwError } from 'rxjs';
 import { TasksComponent } from '../tasks/tasks.component';
 import { By } from '@angular/platform-browser';
 import { i18n } from 'src/i18n';
+import { IUser } from '../shared/interfaces';
 describe('StartpageComponent', () => {
   let component: StartpageComponent;
   let fixture: ComponentFixture<StartpageComponent>;
-  RouterTestingModule
+  const user:IUser = { login: 'akirichuk', password: 'testPass' }
   const fakeUserService = jasmine.createSpyObj("fakeUserService", ["signIn", "fnSetLogin", "createUser"]);
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -56,13 +57,21 @@ describe('StartpageComponent', () => {
     expect(component).toBeTruthy();
   });
   it('Заполнение формы аутентификации', () => {
-    component.formSignIn.setValue({ login: 'akirichuk', password: 'testPass' })
+    component.formSignIn.setValue(user)
     const inputLogin = fixture.debugElement.query(By.css('#login'));
     const inputRegPassword = fixture.debugElement.query(By.css('#passwordReg'));
     expect(inputLogin.nativeElement.value).toBe('akirichuk');
     expect(inputRegPassword.nativeElement.value).toBe('testPass');
 
   });
+  it('getSignIn проверка запроса', done =>{
+    fakeUserService.signIn.and.returnValue(of(true));
+    component.getSignIn(user).subscribe((auth)=>{
+      expect(auth).toBe(true);
+      done();
+    })
+    
+  })
   it('signIn: проверка может ли пользователь войти в систему', done => {
     fakeUserService.signIn.and.returnValue(of(true));
     component.signIn()

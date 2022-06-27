@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { i18n } from 'src/i18n';
 import { UserService } from '../user.service';
-import { catchError, Subject, takeUntil, throwError } from 'rxjs';
+import { catchError, Observable, Subject, takeUntil, throwError } from 'rxjs';
+import { IUser } from '../shared/interfaces';
 
 @Component({
   selector: 'app-startpage',
@@ -34,16 +35,18 @@ export class StartpageComponent {
   ) { }
 
   signIn(): void {
-    const inputUser = this.formSignIn.value;
-    this.userService.signIn(inputUser)
-      .pipe(takeUntil(this.destroy$))
+    const inputUser:IUser = this.formSignIn.value;
+    this.getSignIn(inputUser)
       .subscribe((auth: boolean) => {
-        if (auth) {
-          this.userService.fnSetLogin(inputUser.login);
-          this.router.navigateByUrl('task');
-          this.auth = auth
-        } else this.snackBar.open(i18n.USER_NOT_EXIST);
-      })
+      if (auth) {
+        this.userService.fnSetLogin(inputUser.login);
+        this.router.navigateByUrl('task');
+        this.auth = auth;
+      } else this.snackBar.open(i18n.USER_NOT_EXIST);
+    })
+  }
+  getSignIn(user: IUser): Observable<boolean> {
+    return this.userService.signIn(user).pipe(takeUntil(this.destroy$))
   }
   addUser(): void {
     const newUser = this.formUser.value;
@@ -57,7 +60,7 @@ export class StartpageComponent {
           this.isRegistration = !this.isRegistration;
           this.formUser.reset();
         },
-        error: (err) =>  {
+        error: (err) => {
           this.snackBar.open(err)
         }
       })
