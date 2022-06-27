@@ -31,9 +31,7 @@ export class MainInterceptor implements HttpInterceptor {
         }
         // CREATE USER
         if (request.method === "POST" && request.url === "user") {
-            
-            
-                return of(new HttpResponse({ status: 200, body: this.createUser(request.body) }));
+            return of(new HttpResponse({ status: 200, body: this.createUser(request.body) }));
         }
         // GET TASK
         if (request.method === "GET" && request.url === "tasks") {

@@ -37,6 +37,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
   update$: Observable<ITask[]>;
   destroy$ = new Subject<void>();
   tasks$! : Observable<MatTableDataSource<ITask>>
+  
   constructor(
     public taskService: TaskService,
     public userService: UserService,
@@ -64,7 +65,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
           // this.cdr.detectChanges();
           this.tasks$ = of(this.tasks);
           // this.$testStrem.next(tasks)
-          // observer.next(tasks)
+          observer.next(tasks)
         })
     })
   }
@@ -143,13 +144,15 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
   //Удаление задачи ,row: ITask
   deleteRow(): void {
     let task = this.selection.selected[0];
-    this.selection.clear();
+    
     this.taskService.deleteTask(task)
       .pipe(
         switchMap(() => this.update$),
         takeUntil(this.destroy$)
       )
-      .subscribe();
+      .subscribe((tasks)=>{
+        this.selection.clear();
+      });
   }
 
   //Проверка
