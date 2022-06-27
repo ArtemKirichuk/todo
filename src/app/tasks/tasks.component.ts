@@ -16,7 +16,7 @@ import { priority, COLOR } from '../shared/data';
 import { createFilter } from '../shared/helper';
 import { MatSelectChange } from '@angular/material/select';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -37,19 +37,22 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
   update$: Observable<ITask[]>;
   destroy$ = new Subject<void>();
   tasks$! : Observable<MatTableDataSource<ITask>>
-  
+  categories$:BehaviorSubject<string[]>
+  login:string='';
   constructor(
-    public taskService: TaskService,
-    public userService: UserService,
+    private taskService: TaskService,
+    private userService: UserService,
     private dialogTask: MatDialog,
     private router: Router,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef
   ) {
+    this.categories$ = this.taskService.categories$;
     //Колонки
     this.displayedColumns = ['select', 'name', 'dateStart', 'dateEnd', 'priority', 'category', 'complete', 'creator'];
     this.tasks = new MatTableDataSource();
     this.update$ = new Observable(observer => {
+      this.login = userService.login;
       this.taskService.getTasks()
         .pipe(takeUntil(this.destroy$))
         .subscribe((tasks) => {
