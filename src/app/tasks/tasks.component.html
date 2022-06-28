@@ -5,7 +5,7 @@
     <mat-form-field appearance="fill" class="full-width">
         <!-- <mat-label>Категория</mat-label> -->
         <!-- <input [style]="{ 'display' : 'none' }" matInput placeholder="Input"> -->
-        <mat-select  (selectionChange)="filterCategory($event)">
+        <mat-select id="category" (selectionChange)="filterCategory($event)">
             <mat-option></mat-option>
             <mat-option *ngFor="let category of ( categories$ | async )" [value]="category">{{category}}
             </mat-option>

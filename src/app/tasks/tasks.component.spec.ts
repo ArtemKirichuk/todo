@@ -5,9 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelect, MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -82,5 +83,10 @@ describe('TasksComponent', () => {
     component.deleteRow();
     fixture.detectChanges();
     expect(component.selection.selected.length).toBe(0)
+  });
+  it('filterCategory выбор категории', () => {
+    const selectCategory = fixture.debugElement.query(By.css('#category'));
+    selectCategory.triggerEventHandler('selectionChange',{value: 'value'})
+    expect( component.filterValues['category']).toBe('value')
   });
 });

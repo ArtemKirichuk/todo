@@ -99,6 +99,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
     this.tasks.filter = JSON.stringify(this.filterValues);
   }
   filterCategory(value: MatSelectChange): void {
+    debugger
     this.filterValues['category'] = value.value;
     this.tasks.filter = JSON.stringify(this.filterValues);
   }
