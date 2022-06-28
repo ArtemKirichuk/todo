@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {  MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ITask } from 'src/app/shared/interfaces';
 import { TaskService } from 'src/app/task.service';
 import { CustomValidator } from 'src/app/shared/fn.validator';
@@ -33,15 +33,15 @@ export class DialogTaskComponent implements OnInit {
   get dateStart() { return this.formTask.get('dateStart'); };
   get dateEnd() { return this.formTask.get('dateEnd')!; };
   get category() { return this.formTask.get('category')!; };
+  get complete() { return this.formTask.get('complete')!; };
 
   filteredOptions!: Observable<string[]>;
   categories: string[] = [];
   isCreate: boolean;
 
   constructor(
-    public taskService: TaskService,
-    @Inject(MAT_DIALOG_DATA) public task: ITask,
-    // private dialogRef : MatDialogRef
+    private taskService: TaskService,
+    @Inject(MAT_DIALOG_DATA) public task: ITask
   ) {
     this.isCreate = task ? false : true;
     this.categories = taskService.categories;
@@ -66,7 +66,6 @@ export class DialogTaskComponent implements OnInit {
   //Сохранить изменения
   saveRow(): void {
     Object.assign(this.task, this.formTask.value);
-    // this.taskService.editTask(this.task);
   }
   compareCompleteDate = (d: Date | null): boolean => {
     const day = (d || new Date());

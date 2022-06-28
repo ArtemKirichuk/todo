@@ -43,10 +43,10 @@
             </mat-autocomplete>
         </mat-form-field>
         <!-- Завершить -->
-        <mat-form-field *ngIf="!isCreate" class="example-form-field" appearance="fill">
-            <input matInput [hidden]="true" >
-            <mat-checkbox formControlName="complete">Завершить</mat-checkbox>
-        </mat-form-field>
+        <mat-checkbox formControlName="complete">Завершить</mat-checkbox>
+        <!-- <mat-form-field *ngIf="!isCreate" class="example-form-field" appearance="fill">
+            
+        </mat-form-field> -->
 
         <!-- <mat-form-field  *ngIf="!isCreate" class="example-form-field" appearance="fill">
             <mat-label>Завершить</mat-label>

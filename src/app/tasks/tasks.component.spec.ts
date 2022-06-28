@@ -89,4 +89,5 @@ describe('TasksComponent', () => {
     selectCategory.triggerEventHandler('selectionChange',{value: 'value'})
     expect( component.filterValues['category']).toBe('value')
   });
+
 });
