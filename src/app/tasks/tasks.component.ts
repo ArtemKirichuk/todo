@@ -56,7 +56,7 @@ export class TasksComponent implements OnInit, AfterViewInit,OnDestroy {
       this.taskService.getTasks()
         .pipe(takeUntil(this.destroy$))
         .subscribe((tasks) => {
-          
+          debugger
           this.tasks = new MatTableDataSource(tasks);
           this.tasks.filterPredicate = createFilter();
           // Куда это вытаскивать чтобы работало

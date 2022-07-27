@@ -18,6 +18,5 @@ export class CustomValidator{
     };
   }
 
-  
 }
 // export function 
